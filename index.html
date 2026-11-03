@@ -1,92 +1,641 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>MATH 304 Final Exam Reviewer</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MATH 304 Final Exam Reviewer - Interactive Quiz</title>
 <style>
-:root{--bg:#fff;--fg:#1f2328;--mut:#666;--card:#f6f7f9;--bd:#d0d5dd;--ac:#b8860b;--ok:#1a7f37;--okb:#e6f4ea;--no:#c62828;--nob:#fdeaea}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#17181b;--fg:#e8e8e8;--mut:#9aa0a6;--card:#222428;--bd:#3a3d44;--ac:#f2b705;--ok:#5fd07a;--okb:#16301f;--no:#ff7b7b;--nob:#3a1d1d}}
-*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom))}
-main{max-width:760px;margin:auto}h1{font-size:1.3rem;margin:0 0 4px}.mut{color:var(--mut);font-size:.9rem}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:12px 0}
-button,select{font:inherit;color:var(--fg)}button{cursor:pointer;border:1px solid var(--bd);background:var(--bg);border-radius:8px;padding:10px 14px}
-button.p{background:var(--ac);color:#000;border-color:var(--ac);font-weight:600}
-.opt{display:block;width:100%;text-align:left;margin:8px 0}.opt.ok{background:var(--okb);border-color:var(--ok)}.opt.no{background:var(--nob);border-color:var(--no)}
-.bar{height:6px;background:var(--bd);border-radius:3px}.bar i{display:block;height:100%;background:var(--ac);border-radius:3px}
-.tag{font-size:.75rem;border:1px solid var(--bd);border-radius:99px;padding:2px 8px;margin-right:6px}
-.ex{margin-top:10px;padding:10px;border-left:3px solid var(--ac);background:var(--bg)}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-pre{white-space:pre-wrap;margin:8px 0;font-family:inherit}
-</style></head><body><main id="app"></main>
+:root{
+  --primary:#0e5a8a; --primary-2:#0b4a72; --accent:#0e9f9e; --accent-soft:#e0f7f7;
+  --bg:#eef2f7; --card:#ffffff; --ink:#1e293b; --muted:#64748b; --line:#dbe3ee;
+  --ok:#15803d; --ok-bg:#dcfce7; --ok-line:#86efac;
+  --bad:#b91c1c; --bad-bg:#fee2e2; --bad-line:#fca5a5;
+  --flag:#d97706; --chip-e:#e0f2fe; --chip-e-ink:#075985;
+  --chip-a:#fef9c3; --chip-a-ink:#854d0e; --chip-d:#fee2e2; --chip-d-ink:#991b1b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+[hidden]{display:none !important}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:1020px;margin:0 auto;padding:18px}
+
+/* ---------- start screen ---------- */
+.hero{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-2) 55%,#083a58 100%);
+  color:#fff;border-radius:18px;padding:34px 30px;box-shadow:0 10px 30px rgba(14,90,138,.25)}
+.hero .kicker{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+  padding:4px 12px;border-radius:999px;font-size:13px;letter-spacing:.4px}
+.hero h1{margin:14px 0 6px;font-size:34px;line-height:1.15}
+.hero p{margin:0;color:#d7e6f2;font-size:15.5px}
+.start-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-top:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;
+  box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.card h2{margin:0 0 12px;font-size:17px}
+.mode-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mode-card{text-align:left;border:2px solid var(--line);border-radius:14px;background:#fbfdff;
+  padding:14px 16px;transition:.15s;color:var(--ink)}
+.mode-card:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-1px)}
+.mode-card .m-title{font-weight:700;font-size:16px;margin-bottom:4px;display:flex;gap:8px;align-items:center}
+.mode-card .m-desc{font-size:13.5px;color:var(--muted)}
+.opt-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+.opt-row label{font-size:14px;color:var(--muted);display:flex;gap:8px;align-items:center}
+select{padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:14px}
+.switch{position:relative;width:44px;height:24px;flex:none}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;transition:.2s}
+.slider:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked + .slider{background:var(--accent)}
+.switch input:checked + .slider:before{transform:translateX(20px)}
+.tos-list{list-style:none;margin:0;padding:0;font-size:13.5px;max-height:280px;overflow:auto}
+.tos-list li{display:flex;justify-content:space-between;gap:10px;padding:6px 2px;border-bottom:1px dashed var(--line)}
+.tos-list li:last-child{border-bottom:none}
+.tos-list .cnt{color:var(--muted);white-space:nowrap}
+.resume-box{margin-top:16px;background:#fffbeb;border:1px solid #fde68a;border-radius:14px;padding:14px 18px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.resume-box .btn + .btn{margin-left:auto}
+.btn{border:none;border-radius:10px;padding:10px 18px;font-size:14.5px;font-weight:600;background:var(--primary);color:#fff;transition:.15s}
+.btn:hover{background:var(--primary-2)}
+.btn.ghost{background:#eef2f7;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{background:#e2e8f0}
+.btn.accent{background:var(--accent)}
+.btn.accent:hover{background:#0b807f}
+.btn.danger{background:var(--bad)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ---------- quiz screen ---------- */
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--line);box-shadow:0 1px 6px rgba(15,23,42,.06)}
+.topbar-in{max-width:1020px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.topbar .tb-title{font-weight:700;font-size:15px;color:var(--primary)}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;font-size:16px;background:#f1f5f9;
+  border:1px solid var(--line);padding:5px 12px;border-radius:10px}
+.timer.low{color:#fff;background:var(--bad);border-color:var(--bad)}
+.progress{flex:1;min-width:140px;height:8px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+.progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--primary));transition:width .25s}
+.pcount{font-size:13.5px;color:var(--muted);white-space:nowrap}
+.quiz-wrap{display:grid;grid-template-columns:250px 1fr;gap:16px;margin-top:16px;align-items:start}
+.palette{position:sticky;top:74px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.palette h3{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.pal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.pal-btn{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:6px 0;font-size:12.5px;font-weight:600;color:var(--ink)}
+.pal-btn.answered{background:var(--primary);border-color:var(--primary);color:#fff}
+.pal-btn.correct{background:var(--ok);border-color:var(--ok);color:#fff}
+.pal-btn.wrong{background:var(--bad);border-color:var(--bad);color:#fff}
+.pal-btn.cur{outline:3px solid var(--accent);outline-offset:1px}
+.pal-btn .fdot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--flag);vertical-align:top;margin-left:2px}
+.pal-legend{margin-top:10px;font-size:11.5px;color:var(--muted);display:grid;gap:3px}
+.pal-legend span{display:flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:3px;display:inline-block;border:1.5px solid var(--line)}
+.dot.f{background:var(--primary);border-color:var(--primary)}
+.dot.g{background:var(--ok);border-color:var(--ok)}
+.dot.r{background:var(--bad);border-color:var(--bad)}
+.dot.o{background:var(--flag);border-color:var(--flag)}
+.qmain{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;min-height:420px}
+.qhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.qno{font-weight:800;color:var(--primary);font-size:15px}
+.chip{font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:#f1f5f9;color:#334155;border:1px solid var(--line)}
+.chip.d-Easy{background:var(--chip-e);color:var(--chip-e-ink);border-color:#bae6fd}
+.chip.d-Average{background:var(--chip-a);color:var(--chip-a-ink);border-color:#fde68a}
+.chip.d-Difficult{background:var(--chip-d);color:var(--chip-d-ink);border-color:#fecaca}
+.flagbtn{margin-left:auto;border:1.5px solid var(--line);background:#fff;border-radius:999px;
+  padding:5px 12px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.flagbtn.on{border-color:var(--flag);color:#fff;background:var(--flag)}
+.qtext{font-size:16.5px;margin-bottom:18px}
+.qtext table,.qtext-review table{border-collapse:collapse;margin:10px 0;font-size:14.5px}
+.qtext table caption,.qtext-review table caption{caption-side:bottom;font-size:12px;color:var(--muted);padding-top:4px}
+.qtext th,.qtext td,.qtext-review th,.qtext-review td{border:1px solid #b8c4d4;padding:5px 12px;text-align:center;min-width:34px}
+.qtext th,.qtext-review th{background:#e0f2fe;color:#075985}
+.choices{display:grid;gap:10px}
+.choice{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:#fbfdff;
+  border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15.5px;color:var(--ink);transition:.12s}
+.choice:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+.choice:disabled{cursor:default}
+.choice .letter{flex:none;width:28px;height:28px;border-radius:8px;background:#e2e8f0;color:#334155;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.choice.sel{border-color:var(--primary);background:#eff6ff}
+.choice.sel .letter{background:var(--primary);color:#fff}
+.choice.correct{border-color:var(--ok-line);background:var(--ok-bg)}
+.choice.correct .letter{background:var(--ok);color:#fff}
+.choice.wrong{border-color:var(--bad-line);background:var(--bad-bg)}
+.choice.wrong .letter{background:var(--bad);color:#fff}
+.choice.dim{opacity:.62}
+.explain{margin-top:16px;border-left:4px solid var(--accent);background:#f0fdfa;
+  border-radius:0 10px 10px 0;padding:12px 16px;font-size:14.5px}
+.explain .ex-title{font-weight:700;color:#0f766e;margin-bottom:4px;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
+.qnav{display:flex;gap:10px;margin-top:20px}
+.qnav .spacer{flex:1}
+.qnav .btn.ghost{min-width:96px}
+
+/* ---------- result screen ---------- */
+.score-hero{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;
+  background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 30px;margin-top:16px}
+.ring{--p:0;width:150px;height:150px;border-radius:50%;
+  background:conic-gradient(var(--accent) calc(var(--p)*1%),#e2e8f0 0);
+  display:flex;align-items:center;justify-content:center;position:relative}
+.ring:before{content:"";position:absolute;width:118px;height:118px;border-radius:50%;background:var(--card)}
+.ring .rv{position:relative;text-align:center}
+.ring .rv b{font-size:30px;display:block;line-height:1.1}
+.ring .rv span{font-size:12px;color:var(--muted)}
+.score-side h2{margin:0 0 6px;font-size:22px}
+.score-side p{margin:0;color:var(--muted);font-size:14.5px}
+.stat-row{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
+.stat{border:1px solid var(--line);border-radius:12px;padding:8px 16px;text-align:center;background:#fbfdff}
+.stat b{display:block;font-size:20px}
+.stat span{font-size:12px;color:var(--muted)}
+.stat.ok b{color:var(--ok)} .stat.bad b{color:var(--bad)}
+.brk{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.brk table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.brk-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.brk-wrap h3{margin:0 0 10px;font-size:14px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.brk table td,.brk table th{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
+.brk table tr:last-child td{border-bottom:none}
+.brk td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar{height:6px;background:#e2e8f0;border-radius:99px;overflow:hidden;min-width:70px}
+.bar > div{height:100%;background:var(--accent)}
+.result-actions{display:flex;gap:12px;margin:18px 0 30px;flex-wrap:wrap}
+
+/* review list */
+.review-item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:14px}
+.review-item .rhead{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.badge{font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px}
+.badge.ok{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-line)}
+.badge.bad{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad-line)}
+.badge.skip{background:#f1f5f9;color:var(--muted);border:1px solid var(--line)}
+.rtext{font-size:15px}
+.rans{margin-top:10px;font-size:14px}
+.rans .lbl{font-weight:700}
+.rans .your.ok{color:var(--ok)} .rans .your.bad{color:var(--bad)}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:#fff;border-radius:16px;max-width:440px;width:100%;padding:22px 24px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal h3{margin:0 0 8px}
+.modal p{margin:0 0 16px;color:var(--muted);font-size:14.5px}
+.modal .m-actions{display:flex;gap:10px;justify-content:flex-end}
+
+footer.cred{max-width:1020px;margin:6px auto 30px;padding:0 18px;font-size:12.5px;color:var(--muted);text-align:center}
+
+@media (max-width:860px){
+  .start-grid,.brk{grid-template-columns:1fr}
+  .quiz-wrap{grid-template-columns:1fr}
+  .palette{position:static;order:2}
+  .score-hero{grid-template-columns:1fr;text-align:center;justify-items:center}
+  .qmain{padding:18px}
+}
+@media print{ .topbar,.palette,.qnav,.result-actions,#screen-start{display:none !important} }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ START ============ -->
+  <section id="screen-start">
+    <div class="wrap">
+      <div class="hero">
+        <span class="kicker">MATH 304 &middot; Quantitative Methods w/ Modeling and Simulation</span>
+        <h1>Final Exam Reviewer</h1>
+        <p>50 multiple-choice items with full solutions &middot; covers all 18 topics of the official Table of Specifications &middot; Easy 15 &middot; Average 30 &middot; Difficult 5</p>
+      </div>
+      <div class="start-grid">
+        <div class="card">
+          <h2>Choose how you want to practice</h2>
+          <div class="mode-row">
+            <button class="mode-card" id="btn-practice">
+              <span class="m-title">&#9210; Practice mode</span>
+              <span class="m-desc">Instant feedback after every answer, with a full step-by-step explanation. Best for reviewing.</span>
+            </button>
+            <button class="mode-card" id="btn-exam">
+              <span class="m-title">&#9201; Exam mode</span>
+              <span class="m-desc">Simulates the real final exam: timed, no feedback until you submit, with a results breakdown.</span>
+            </button>
+          </div>
+          <div class="opt-row">
+            <label>Exam timer
+              <select id="sel-timer">
+                <option value="60">60 minutes</option>
+                <option value="90" selected>90 minutes</option>
+                <option value="120">120 minutes</option>
+                <option value="0">No limit</option>
+              </select>
+            </label>
+            <label class="switch"><input type="checkbox" id="chk-shuffle"><span class="slider"></span></label>
+            <label for="chk-shuffle">Shuffle questions</label>
+          </div>
+          <div class="resume-box" id="resume-box" hidden>
+            <span>You have an unfinished attempt saved in this browser.</span>
+            <button class="btn accent" id="btn-resume">Resume</button>
+            <button class="btn ghost" id="btn-discard">Discard</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>What's inside (per the TOS)</h2>
+          <ul class="tos-list" id="tos-list"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="screen-quiz" hidden>
+    <header class="topbar">
+      <div class="topbar-in">
+        <span class="tb-title">MATH 304 Final Exam Reviewer</span>
+        <span class="timer" id="timer" hidden>90:00</span>
+        <div class="progress"><div id="progbar"></div></div>
+        <span class="pcount" id="pcount"></span>
+        <button class="btn" id="btn-submit" hidden>Submit</button>
+      </div>
+    </header>
+    <div class="wrap">
+      <div class="quiz-wrap">
+        <aside class="palette">
+          <h3 id="pal-title">Questions</h3>
+          <div class="pal-grid" id="pal-grid"></div>
+          <div class="pal-legend" id="pal-legend"></div>
+        </aside>
+        <main class="qmain">
+          <div class="qhead">
+            <span class="qno" id="qno"></span>
+            <span class="chip" id="qtopic"></span>
+            <span class="chip" id="qdiff"></span>
+            <button class="flagbtn" id="btn-flag">&#9873; Flag</button>
+          </div>
+          <div class="qtext" id="qtext"></div>
+          <div class="choices" id="choices"></div>
+          <div class="explain" id="explain" hidden></div>
+          <div class="qnav">
+            <button class="btn ghost" id="btn-prev">&#8592; Previous</button>
+            <span class="spacer"></span>
+            <button class="btn" id="btn-next">Next &#8594;</button>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section id="screen-result" hidden>
+    <div class="wrap">
+      <div class="score-hero">
+        <div class="ring" id="ring"><div class="rv"><b id="score-pct">0%</b><span>score</span></div></div>
+        <div class="score-side">
+          <h2 id="result-title"></h2>
+          <p id="result-sub"></p>
+          <div class="stat-row">
+            <div class="stat ok"><b id="st-correct">0</b><span>correct</span></div>
+            <div class="stat bad"><b id="st-wrong">0</b><span>wrong</span></div>
+            <div class="stat"><b id="st-skip">0</b><span>unanswered</span></div>
+            <div class="stat"><b id="st-time">&mdash;</b><span>time used</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="brk">
+        <div class="brk-wrap"><h3>Score by topic</h3><table id="tbl-topic"></table></div>
+        <div class="brk-wrap"><h3>Score by difficulty</h3><table id="tbl-diff"></table></div>
+      </div>
+      <div class="result-actions">
+        <button class="btn accent" id="btn-review">Review answers</button>
+        <button class="btn ghost" id="btn-retake">Retake quiz</button>
+        <button class="btn ghost" id="btn-home">Back to start</button>
+      </div>
+      <div id="review-list"></div>
+    </div>
+  </section>
+
+  <div class="modal-bg" id="modal" hidden>
+    <div class="modal">
+      <h3 id="modal-title"></h3>
+      <p id="modal-msg"></p>
+      <div class="m-actions">
+        <button class="btn ghost" id="modal-cancel">Cancel</button>
+        <button class="btn danger" id="modal-ok">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="cred">MATH 304 - Quantitative Methods w/ Modeling and Simulation &middot; Final Exam Reviewer based on the Table of Specifications by Mr. Kenneth N. Tercero</footer>
+</div>
+
+<script>const QUIZ = {"questions": [{"n": 1, "topic": "Operations Research", "diff": "Easy", "q": "Which statement BEST defines <b>Operations Research (OR)<\/b>?", "choices": ["A field that focuses only on the accounting records of an organization", "A scientific, model-based approach to decision-making used to conduct and coordinate the operations (activities) within an organization", "A branch of statistics that collects and summarizes survey data for marketing", "A manual scheduling technique that avoids the use of mathematics"], "ans": 1, "exp": "OR applies the scientific method, together with mathematical models, to problems concerning how to conduct and coordinate the operations within an organization (Module 1). It is decision-making supported by models, not just record keeping or data collection."}, {"n": 2, "topic": "Operations Research", "diff": "Easy", "q": "Arrange the general sequence of the OR process: (1) Solve the model, (2) Define the problem, (3) Validate and implement the solution, (4) Formulate (build) the model.", "choices": ["1 - 2 - 3 - 4", "4 - 2 - 1 - 3", "2 - 4 - 1 - 3", "2 - 1 - 4 - 3"], "ans": 2, "exp": "The OR process generally proceeds: define the problem, then formulate a model, then solve the model, and finally validate/test and implement the solution. Solving before building the model, or validating before solving, is not meaningful."}, {"n": 3, "topic": "Elements of Optimization Model", "diff": "Easy", "q": "In a linear programming model, the <b>objective function<\/b> is best described as:", "choices": ["The set of unknown quantities whose values are to be determined", "The limitations or restrictions on the available resources", "The mathematical expression for the quantity to be maximized or minimized", "The nonnegativity conditions x<sub>j<\/sub> &ge; 0"], "ans": 2, "exp": "The objective function (for example P = 3x<sub>1<\/sub> + 2x<sub>2<\/sub>) measures the performance of the decision variables - profit to maximize or cost to minimize. The unknowns are the decision variables and the restrictions are the constraints."}, {"n": 4, "topic": "Elements of Optimization Model", "diff": "Easy", "q": "A bakery cannot use more than 100 kg of flour per day. In the linear programming model of the bakery's production, this information belongs to the:", "choices": ["decision variables", "objective function", "nonnegativity conditions", "constraints"], "ans": 3, "exp": "Constraints express the limitations or restrictions on available resources (flour, baking time, budget). The 100 kg flour limit is therefore a constraint, usually written as an inequality such as 2x<sub>1<\/sub> + 5x<sub>2<\/sub> &le; 100."}, {"n": 5, "topic": "Real-World Problems into LP Models", "diff": "Easy", "q": "<b>Scenario A.<\/b> A bakery produces loaves of bread (x<sub>1<\/sub>) and cakes (x<sub>2<\/sub>) daily. Profit is Php 25 per loaf and Php 80 per cake. Each loaf uses 2 kg of flour and each cake uses 5 kg; 100 kg of flour are available daily. Each loaf needs 1 hour of baking time and each cake needs 3 hours; the oven is available 45 hours daily. A hotel order requires the bakery to produce <b>at least 5 cakes<\/b> daily. The bakery wants to maximize daily profit.<br/><br/>What are the <b>decision variables<\/b>?", "choices": ["x<sub>1<\/sub> = profit per loaf, x<sub>2<\/sub> = profit per cake", "x<sub>1<\/sub> = kilograms of flour used, x<sub>2<\/sub> = hours of baking time", "x<sub>1<\/sub> = number of loaves of bread to produce daily, x<sub>2<\/sub> = number of cakes to produce daily", "x<sub>1<\/sub> = number of hotel orders, x<sub>2<\/sub> = number of bakery customers"], "ans": 2, "exp": "Decision variables are the controllable quantities the decision maker must determine: here, how many loaves and how many cakes to bake each day. Profits, flour and hours are given data (parameters), not variables."}, {"n": 6, "topic": "Real-World Problems into LP Models", "diff": "Easy", "q": "<b>Scenario A.<\/b> Which is the correct <b>objective function<\/b>?", "choices": ["Maximize Z = 25x<sub>1<\/sub> + 80x<sub>2<\/sub>", "Minimize Z = 80x<sub>1<\/sub> + 25x<sub>2<\/sub>", "Maximize Z = 2x<sub>1<\/sub> + 5x<sub>2<\/sub>", "Maximize Z = 100x<sub>1<\/sub> + 45x<sub>2<\/sub>"], "ans": 0, "exp": "Each loaf contributes Php 25 and each cake Php 80 of profit, and profit is to be maximized: Max Z = 25x<sub>1<\/sub> + 80x<sub>2<\/sub>. The values 2 and 5 are flour usages, while 100 and 45 are resource availabilities - they belong to the constraints."}, {"n": 7, "topic": "Real-World Problems into LP Models", "diff": "Easy", "q": "<b>Scenario A.<\/b> The problem is classified as a(n):", "choices": ["minimization problem, because the resources are limited", "maximization problem, because the goal is the largest possible daily profit", "minimization problem, because cakes cost more than bread", "maximization problem, because flour is scarce"], "ans": 1, "exp": "Classification depends on the goal of the objective function. Since the bakery wants the largest possible profit, the model is a maximization LP problem. Limited resources only shape the constraints."}, {"n": 8, "topic": "Real-World Problems into LP Models", "diff": "Average", "q": "<b>Scenario A.<\/b> Which constraint correctly represents the <b>flour limitation<\/b>?", "choices": ["2x<sub>1<\/sub> + 5x<sub>2<\/sub> &ge; 100", "5x<sub>1<\/sub> + 2x<sub>2<\/sub> &le; 100", "2x<sub>1<\/sub> + 5x<sub>2<\/sub> &le; 100", "2x<sub>1<\/sub> + 5x<sub>2<\/sub> = 100"], "ans": 2, "exp": "Each loaf takes 2 kg and each cake 5 kg, so total flour used is 2x<sub>1<\/sub> + 5x<sub>2<\/sub>; it cannot exceed the 100 kg available, giving &le;. Reversing the coefficients (5x<sub>1<\/sub> + 2x<sub>2<\/sub>) or the direction (&ge;) misstates the situation."}, {"n": 9, "topic": "Real-World Problems into LP Models", "diff": "Average", "q": "<b>Scenario A.<\/b> Which constraint correctly represents the <b>baking-time limitation<\/b>?", "choices": ["3x<sub>1<\/sub> + x<sub>2<\/sub> &le; 45", "x<sub>1<\/sub> + 3x<sub>2<\/sub> &ge; 45", "x<sub>1<\/sub> + x<sub>2<\/sub> &le; 45", "x<sub>1<\/sub> + 3x<sub>2<\/sub> &le; 45"], "ans": 3, "exp": "Each loaf needs 1 hour and each cake 3 hours of oven time, and at most 45 hours are available: x<sub>1<\/sub> + 3x<sub>2<\/sub> &le; 45. The coefficients must match the usage of each product, and availability gives the &le; direction."}, {"n": 10, "topic": "Real-World Problems into LP Models", "diff": "Average", "q": "<b>Scenario A.<\/b> Which constraint represents the hotel order of <b>at least 5 cakes daily<\/b>?", "choices": ["x<sub>2<\/sub> &le; 5", "x<sub>2<\/sub> &ge; 5", "x<sub>1<\/sub> + x<sub>2<\/sub> &ge; 5", "x<sub>2<\/sub> = 5"], "ans": 1, "exp": "The phrase 'at least' translates to &ge;: the number of cakes must be 5 or more. Equality (=) would force exactly 5, and &le; would cap production, both of which contradict the order."}, {"n": 11, "topic": "Real-World Problems into LP Models", "diff": "Average", "q": "<b>Scenario B.<\/b> A dietitian blends two foods. Food A (x<sub>1<\/sub>) costs Php 20 per unit and supplies 3 units of protein; Food B (x<sub>2<\/sub>) costs Php 30 per unit and supplies 5 units of protein. The meal must supply <b>at least 45 units of protein<\/b> at <b>minimum cost<\/b>.<br/><br/>The objective function is:", "choices": ["Maximize Z = 20x<sub>1<\/sub> + 30x<sub>2<\/sub>", "Minimize Z = 3x<sub>1<\/sub> + 5x<sub>2<\/sub>", "Minimize Z = 20x<sub>1<\/sub> + 30x<sub>2<\/sub>", "Minimize Z = 45x<sub>1<\/sub> + 45x<sub>2<\/sub>"], "ans": 2, "exp": "The goal is minimum cost, and the unit costs are Php 20 and Php 30: Min Z = 20x<sub>1<\/sub> + 30x<sub>2<\/sub>. The protein contents 3 and 5 belong to the constraint, and 45 is the requirement, not a price."}, {"n": 12, "topic": "Real-World Problems into LP Models", "diff": "Average", "q": "<b>Scenario B.<\/b> The protein requirement is written as:", "choices": ["3x<sub>1<\/sub> + 5x<sub>2<\/sub> &le; 45", "3x<sub>1<\/sub> + 5x<sub>2<\/sub> &ge; 45", "5x<sub>1<\/sub> + 3x<sub>2<\/sub> &ge; 45", "20x<sub>1<\/sub> + 30x<sub>2<\/sub> &ge; 45"], "ans": 1, "exp": "Protein supplied is 3 per unit of Food A plus 5 per unit of Food B, and it must reach at least 45: 3x<sub>1<\/sub> + 5x<sub>2<\/sub> &ge; 45. The costs 20 and 30 belong to the objective, not to this constraint."}, {"n": 13, "topic": "Real-World Problems into LP Models", "diff": "Average", "q": "<b>Scenario B.<\/b> The complete LP model is:", "choices": ["Minimize Z = 20x<sub>1<\/sub> + 30x<sub>2<\/sub>, subject to 3x<sub>1<\/sub> + 5x<sub>2<\/sub> &ge; 45, x<sub>1<\/sub>, x<sub>2<\/sub> &ge; 0", "Maximize Z = 20x<sub>1<\/sub> + 30x<sub>2<\/sub>, subject to 3x<sub>1<\/sub> + 5x<sub>2<\/sub> &le; 45, x<sub>1<\/sub>, x<sub>2<\/sub> &ge; 0", "Minimize Z = 3x<sub>1<\/sub> + 5x<sub>2<\/sub>, subject to 20x<sub>1<\/sub> + 30x<sub>2<\/sub> &ge; 45, x<sub>1<\/sub>, x<sub>2<\/sub> &ge; 0", "Minimize Z = 20x<sub>1<\/sub> + 30x<sub>2<\/sub>, subject to 3x<sub>1<\/sub> + 5x<sub>2<\/sub> &le; 45, x<sub>1<\/sub>, x<sub>2<\/sub> &ge; 0"], "ans": 0, "exp": "Cost is minimized (Min Z = 20x<sub>1<\/sub> + 30x<sub>2<\/sub>), the requirement is a floor (&ge; 45), and both foods may be used in any nonnegative amount. Mixing up the direction of the inequality or the objective sense changes the problem entirely."}, {"n": 14, "topic": "Inequalities", "diff": "Easy", "q": "Solve for x:  2x + 3 &le; 11", "choices": ["x &le; 7", "x &ge; 7", "x &ge; 4", "x &le; 4"], "ans": 3, "exp": "Subtract 3 from both sides: 2x &le; 8. Dividing by the positive number 2 keeps the direction of the inequality: x &le; 4. (Dividing by a NEGATIVE number is the only case that reverses the sign.)"}, {"n": 15, "topic": "Inequalities", "diff": "Easy", "q": "Which point satisfies the inequality 3x + 2y &le; 12?", "choices": ["(4, 1), because 3(4) + 2(1) = 14", "(3, 2), because 3(3) + 2(2) = 13", "(1, 3), because 3(1) + 2(3) = 9", "(2, 4), because 3(2) + 2(4) = 14"], "ans": 2, "exp": "Substituting (1, 3) gives 3(1) + 2(3) = 9, and 9 &le; 12 is true, so the point satisfies the inequality. The other points give 13 or 14, which exceed 12."}, {"n": 16, "topic": "Inequalities", "diff": "Average", "q": "A feasible region is defined by the system  x + y &le; 6,  x &ge; 1,  y &ge; 2.  Which point lies <b>inside<\/b> the feasible region?", "choices": ["(5, 2), since x + y = 7 &le; 6", "(0, 3), since x + y = 3 &le; 6", "(2, 3), since all three inequalities hold", "(4, 4), since x &ge; 1 and y &ge; 2"], "ans": 2, "exp": "A point is in the feasible region only if it satisfies ALL inequalities. (2, 3) gives x + y = 5 &le; 6, x = 2 &ge; 1, y = 3 &ge; 2. (5, 2) and (4, 4) violate x + y &le; 6, and (0, 3) violates x &ge; 1."}, {"n": 17, "topic": "Inequalities", "diff": "Average", "q": "Which inequality represents the region <b>on or above<\/b> the line y = x + 2?", "choices": ["y &le; x + 2", "y &ge; x + 2", "y &lt; x + 2", "x &ge; y + 2"], "ans": 1, "exp": "Points above the line have y-values greater than the line's y-value x + 2, and 'on' the line is included, so y &ge; x + 2. y &le; x + 2 shades the region below, and x &ge; y + 2 is a different line arrangement."}, {"n": 18, "topic": "Two-Variable LP: Graphical Method", "diff": "Average", "q": "Solve using the graphical (corner-point) method:  Maximize Z = 2x + 3y  subject to  x + y &le; 5,  x + 2y &le; 8,  x, y &ge; 0.  The corner points of the feasible region are (0, 0), (5, 0), (2, 3) and (0, 4). The optimal solution is:", "choices": ["x = 0, y = 4, Z = 12", "x = 5, y = 0, Z = 10", "x = 2, y = 3, Z = 13", "x = 3, y = 2, Z = 12"], "ans": 2, "exp": "Evaluate Z at every corner: (0,0) gives 0; (5,0) gives 10; (0,4) gives 12; (2,3) gives 2(2) + 3(3) = 13. The maximum is Z = 13 at x = 2, y = 3 - the corner where the two constraint lines intersect (2 + 3 = 5 and 2 + 6 = 8)."}, {"n": 19, "topic": "Elementary Row Operations on Matrices", "diff": "Easy", "q": "Which of the following is <b>NOT<\/b> a valid elementary row operation?", "choices": ["Interchanging (swapping) two rows", "Multiplying a row by the nonzero constant 5", "Adding 3 times row 1 to row 2", "Multiplying a row by the constant 0"], "ans": 3, "exp": "Valid elementary row operations are: swap two rows; multiply a row by a NONZERO constant; add a multiple of one row to another. Multiplying a row by 0 destroys the row's information and cannot be reversed, so it is not allowed."}, {"n": 20, "topic": "Elementary Row Operations on Matrices", "diff": "Average", "q": "The first row of an augmented matrix is R1 = [2&nbsp;&nbsp;4&nbsp;|&nbsp;6].  Applying the operation R1 &rarr; (1/2)R1 gives:", "choices": ["[1&nbsp;&nbsp;2&nbsp;|&nbsp;3]", "[2&nbsp;&nbsp;4&nbsp;|&nbsp;6]", "[1&nbsp;&nbsp;4&nbsp;|&nbsp;3]", "[4&nbsp;&nbsp;8&nbsp;|&nbsp;12]"], "ans": 3, "exp": "Scaling a row multiplies EVERY entry by the constant: (1/2)(2) = 1, (1/2)(4) = 2, (1/2)(6) = 3, giving [1 2 | 3]. Option D instead multiplied by 2, which is the reverse operation."}, {"n": 21, "topic": "Elementary Row Operations on Matrices", "diff": "Average", "q": "Given R1 = [1&nbsp;&nbsp;2&nbsp;|&nbsp;3] and R2 = [2&nbsp;&nbsp;5&nbsp;|&nbsp;8].  Applying R2 &rarr; R2 - 2R1 gives:", "choices": ["[0&nbsp;&nbsp;1&nbsp;|&nbsp;5]", "[0&nbsp;&nbsp;1&nbsp;|&nbsp;2]", "[4&nbsp;&nbsp;9&nbsp;|&nbsp;11]", "[0&nbsp;&nbsp;3&nbsp;|&nbsp;2]"], "ans": 1, "exp": "Subtract 2 times each entry of R1 from R2: 2 - 2(1) = 0, 5 - 2(2) = 1, 8 - 2(3) = 2, giving [0 1 | 2]. This creates the zero in the first column, which is exactly the goal of elimination."}, {"n": 22, "topic": "Elementary Row Operations on Matrices", "diff": "Average", "q": "Use elimination to solve the system:  2x + y = 7  and  x - y = 2.", "choices": ["x = 3, y = 1", "x = 1, y = 3", "x = 2, y = 3", "x = 4, y = 1"], "ans": 0, "exp": "Adding the two equations eliminates y: (2x + y) + (x - y) = 3x = 7 + 2 = 9, so x = 3. Substituting into x - y = 2 gives y = x - 2 = 1. Check: 2(3) + 1 = 7 and 3 - 1 = 2."}, {"n": 23, "topic": "Simplex Method: 2-Variable Maximization", "diff": "Easy", "q": "Consider: Maximize Z = 3x<sub>1<\/sub> + 2x<sub>2<\/sub> subject to 2x<sub>1<\/sub> + x<sub>2<\/sub> &le; 10, x<sub>1<\/sub> + 3x<sub>2<\/sub> &le; 15, x<sub>1<\/sub>, x<sub>2<\/sub> &ge; 0.<br/><br/>How many <b>slack variables<\/b> are needed to write this problem in standard form?", "choices": ["0", "1", "2", "3"], "ans": 2, "exp": "Each &le; constraint receives exactly one slack variable, so two constraints need two slacks (s<sub>1<\/sub> and s<sub>2<\/sub>). The number of slack variables always equals the number of &le; constraints."}, {"n": 24, "topic": "Simplex Method: 2-Variable Maximization", "diff": "Easy", "q": "The initial simplex tableau of the maximization problem (Items 23-28) is shown below.<br/><table><caption>Initial simplex tableau<\/caption><tr><th>BV<\/th><th>Z<\/th><th>x1<\/th><th>x2<\/th><th>s1<\/th><th>s2<\/th><th>RHS<\/th><\/tr><tr><th>Z<\/th><td>1<\/td><td>-3<\/td><td>-2<\/td><td>0<\/td><td>0<\/td><td>0<\/td><\/tr><tr><th>s1<\/th><td>0<\/td><td>2<\/td><td>1<\/td><td>1<\/td><td>0<\/td><td>10<\/td><\/tr><tr><th>s2<\/th><td>0<\/td><td>1<\/td><td>3<\/td><td>0<\/td><td>1<\/td><td>15<\/td><\/tr><\/table><br/>Which variable <b>enters<\/b> the basis in the first iteration, and why?", "choices": ["s<sub>1<\/sub>, because it is a slack variable", "x<sub>1<\/sub>, because it has the most negative Z-row coefficient (-3)", "x<sub>2<\/sub>, because its coefficient -2 is closer to zero", "Z, because its coefficient is 1"], "ans": 1, "exp": "In a maximization simplex, the entering variable is the one with the MOST NEGATIVE coefficient in the objective (Z) row. Comparing -3 (x<sub>1<\/sub>) and -2 (x<sub>2<\/sub>), x<sub>1<\/sub> enters first because -3 is the most negative."}, {"n": 25, "topic": "Simplex Method: 2-Variable Maximization", "diff": "Average", "q": "<table><caption>Initial simplex tableau<\/caption><tr><th>BV<\/th><th>Z<\/th><th>x1<\/th><th>x2<\/th><th>s1<\/th><th>s2<\/th><th>RHS<\/th><\/tr><tr><th>Z<\/th><td>1<\/td><td>-3<\/td><td>-2<\/td><td>0<\/td><td>0<\/td><td>0<\/td><\/tr><tr><th>s1<\/th><td>0<\/td><td>2<\/td><td>1<\/td><td>1<\/td><td>0<\/td><td>10<\/td><\/tr><tr><th>s2<\/th><td>0<\/td><td>1<\/td><td>3<\/td><td>0<\/td><td>1<\/td><td>15<\/td><\/tr><\/table><br/>Using the initial tableau above, the ratios for the entering variable x<sub>1<\/sub> are 10/2 = 5 (s<sub>1<\/sub> row) and 15/1 = 15 (s<sub>2<\/sub> row). Which is the <b>leaving<\/b> variable, and why?", "choices": ["s<sub>2<\/sub>, because 15 is the larger ratio", "x<sub>1<\/sub>, because it is entering", "s<sub>1<\/sub>, because 5 is the minimum ratio", "x<sub>2<\/sub>, because it has a negative Z-row entry"], "ans": 2, "exp": "The minimum ratio test chooses the row with the SMALLEST nonnegative ratio: 5 &lt; 15, so s<sub>1<\/sub> leaves the basis. This guarantees the basic variables stay nonnegative after the pivot."}, {"n": 26, "topic": "Simplex Method: 2-Variable Maximization", "diff": "Average", "q": "<table><caption>Initial simplex tableau<\/caption><tr><th>BV<\/th><th>Z<\/th><th>x1<\/th><th>x2<\/th><th>s1<\/th><th>s2<\/th><th>RHS<\/th><\/tr><tr><th>Z<\/th><td>1<\/td><td>-3<\/td><td>-2<\/td><td>0<\/td><td>0<\/td><td>0<\/td><\/tr><tr><th>s1<\/th><td>0<\/td><td>2<\/td><td>1<\/td><td>1<\/td><td>0<\/td><td>10<\/td><\/tr><tr><th>s2<\/th><td>0<\/td><td>1<\/td><td>3<\/td><td>0<\/td><td>1<\/td><td>15<\/td><\/tr><\/table><br/>With x<sub>1<\/sub> entering and s<sub>1<\/sub> leaving (tableau above), the <b>pivot element<\/b> of the first iteration is:", "choices": ["2, at the intersection of the x<sub>1<\/sub> column and the s<sub>1<\/sub> row", "3, at the intersection of the x<sub>1<\/sub> column and the Z row", "1, at the intersection of the x<sub>2<\/sub> column and the s<sub>1<\/sub> row", "15, the right-hand side of the s<sub>2<\/sub> row"], "ans": 0, "exp": "The pivot element always lies where the ENTERING variable's column meets the LEAVING variable's row: column x<sub>1<\/sub>, row s<sub>1<\/sub>, whose entry is 2. The whole pivot row will be divided by this element."}, {"n": 27, "topic": "Simplex Method: 2-Variable Maximization", "diff": "Average", "q": "After performing the first pivot (x<sub>1<\/sub> enters, s<sub>1<\/sub> leaves), the new Z-row is  Z + 0x<sub>1<\/sub> - (1/2)x<sub>2<\/sub> + (3/2)s<sub>1<\/sub> = 15.  The value of <b>Z after the first pivot<\/b> is:", "choices": ["10", "15", "17", "5"], "ans": 1, "exp": "The RHS of the Z row after the pivot equals the previous Z value plus (entering coefficient) x (new basic value of x<sub>1<\/sub>): 0 + 3 &times; 5 = 15. The tableau is not yet optimal because x<sub>2<\/sub> still has a negative coefficient, -1/2."}, {"n": 28, "topic": "Simplex Method: 2-Variable Maximization", "diff": "Difficult", "q": "Carrying the simplex method to completion (second pivot: x<sub>2<\/sub> enters, s<sub>2<\/sub> leaves), all Z-row coefficients become nonnegative:  Z + (7/5)s<sub>1<\/sub> + (1/5)s<sub>2<\/sub> = 17. The <b>optimal solution<\/b> of the problem is:", "choices": ["x<sub>1<\/sub> = 5, x<sub>2<\/sub> = 0, Z = 15", "x<sub>1<\/sub> = 0, x<sub>2<\/sub> = 5, Z = 10", "x<sub>1<\/sub> = 4, x<sub>2<\/sub> = 3, Z = 18", "x<sub>1<\/sub> = 3, x<sub>2<\/sub> = 4, Z = 17"], "ans": 3, "exp": "At optimality x<sub>1<\/sub> = 3 and x<sub>2<\/sub> = 4 (the RHS values of the two constraint rows), giving Z = 3(3) + 2(4) = 17. Verification: 2(3) + 4 = 10 &le; 10 and 3 + 3(4) = 15 &le; 15, so both resources are fully used."}, {"n": 29, "topic": "Simplex Method: 2-Variable Minimization (Dual)", "diff": "Average", "q": "Consider the minimization problem (Module 3):  Minimize Z = 12x<sub>1<\/sub> + 16x<sub>2<\/sub>  subject to  x<sub>1<\/sub> + 2x<sub>2<\/sub> &ge; 40,  x<sub>1<\/sub> + x<sub>2<\/sub> &ge; 30,  x<sub>1<\/sub>, x<sub>2<\/sub> &ge; 0.<br/><br/>To solve it by the (maximization) simplex method, we form the <b>dual<\/b>. The dual objective function is:", "choices": ["Maximize W = 12y<sub>1<\/sub> + 16y<sub>2<\/sub>", "Maximize W = 40y<sub>1<\/sub> + 30y<sub>2<\/sub>", "Minimize W = 40y<sub>1<\/sub> + 30y<sub>2<\/sub>", "Maximize W = 30y<sub>1<\/sub> + 40y<sub>2<\/sub>"], "ans": 1, "exp": "Forming the dual transposes the roles: the primal right-hand sides (40, 30) become the dual objective coefficients, and the primal objective coefficients (12, 16) become the dual right-hand sides. A minimization becomes a maximization."}, {"n": 30, "topic": "Simplex Method: 2-Variable Minimization (Dual)", "diff": "Average", "q": "For the same problem, the <b>dual constraints<\/b> obtained by transposing (rows to columns) are:", "choices": ["y<sub>1<\/sub> + y<sub>2<\/sub> &le; 12  and  2y<sub>1<\/sub> + y<sub>2<\/sub> &le; 16", "y<sub>1<\/sub> + y<sub>2<\/sub> &ge; 12  and  2y<sub>1<\/sub> + y<sub>2<\/sub> &ge; 16", "2y<sub>1<\/sub> + y<sub>2<\/sub> &le; 12  and  y<sub>1<\/sub> + y<sub>2<\/sub> &le; 16", "y<sub>1<\/sub> + y<sub>2<\/sub> &le; 40  and  2y<sub>1<\/sub> + y<sub>2<\/sub> &le; 30"], "ans": 0, "exp": "The columns of the primal become the rows of the dual: the x<sub>1<\/sub> coefficients (1, 1) give y<sub>1<\/sub> + y<sub>2<\/sub> &le; 12, and the x<sub>2<\/sub> coefficients (2, 1) give 2y<sub>1<\/sub> + y<sub>2<\/sub> &le; 16. In a maximization dual, &ge; constraints turn into &le;."}, {"n": 31, "topic": "Simplex Method: 2-Variable Minimization (Dual)", "diff": "Difficult", "q": "Solving the dual gives the optimum at y<sub>1<\/sub> = 4, y<sub>2<\/sub> = 8 with W = 400. By duality, the <b>minimum value of the original problem<\/b> is:", "choices": ["480", "360", "40", "400, attained at x<sub>1<\/sub> = 20, x<sub>2<\/sub> = 10"], "ans": 3, "exp": "Strong duality: optimal Min Z = optimal Max W = 400. Direct check of the primal: at the intersection of x<sub>1<\/sub> + 2x<sub>2<\/sub> = 40 and x<sub>1<\/sub> + x<sub>2<\/sub> = 30, we get x<sub>2<\/sub> = 10, x<sub>1<\/sub> = 20 and Z = 12(20) + 16(10) = 400; the axis corners (40, 0) and (0, 30) both give a larger value, 480."}, {"n": 32, "topic": "Big-M Method: Maximization", "diff": "Average", "q": "Consider: Maximize Z = 5x<sub>1<\/sub> + 4x<sub>2<\/sub>  subject to  6x<sub>1<\/sub> + 4x<sub>2<\/sub> &le; 24,  x<sub>1<\/sub> + 2x<sub>2<\/sub> &ge; 6,  x<sub>1<\/sub>, x<sub>2<\/sub> &ge; 0.<br/><br/>With slack s<sub>1<\/sub>, surplus s<sub>2<\/sub> and artificial A<sub>1<\/sub>, the correct <b>Big-M objective function<\/b> is:", "choices": ["Maximize Z = 5x<sub>1<\/sub> + 4x<sub>2<\/sub> + 0s<sub>1<\/sub> + 0s<sub>2<\/sub> + MA<sub>1<\/sub>", "Maximize Z = 5x<sub>1<\/sub> + 4x<sub>2<\/sub> + s<sub>1<\/sub> + s<sub>2<\/sub> + MA<sub>1<\/sub>", "Maximize Z = 5x<sub>1<\/sub> + 4x<sub>2<\/sub> + 0s<sub>1<\/sub> - 0s<sub>2<\/sub> + MA<sub>1<\/sub>", "Maximize Z = 5x<sub>1<\/sub> + 4x<sub>2<\/sub> + 0s<sub>1<\/sub> + 0s<sub>2<\/sub> - MA<sub>1<\/sub>"], "ans": 3, "exp": "The &le; constraint gets a slack (coefficient 0) and the &ge; constraint gets a surplus (coefficient 0) plus an artificial variable. For a MAXIMIZATION objective the artificial variable is penalized with -M (module rule: add -Ma when maximizing, +Ma when minimizing), forcing A<sub>1<\/sub> to 0 in the final solution."}, {"n": 33, "topic": "Big-M Method: Maximization", "diff": "Difficult", "q": "After applying the Big-M method to a maximization problem, the FINAL tableau still shows the artificial variable A<sub>1<\/sub> = 3 in the basis. What can you conclude?", "choices": ["The problem has no feasible solution", "The optimal solution has been reached with Z = 3", "The problem has multiple optimal solutions", "The problem is unbounded"], "ans": 0, "exp": "A positive artificial variable remaining in the final basis means the artificial could not be driven to zero - the constraints cannot all be satisfied at the same time. The problem is INFEASIBLE (not unbounded and not optimal)."}, {"n": 34, "topic": "Big-M Method: Minimization", "diff": "Easy", "q": "In a <b>minimization<\/b> problem solved by the Big-M method, the penalty assigned to each artificial variable A in the objective function is:", "choices": ["-M, because M is always subtracted", "+M, so the very large cost forces A to become 0", "0, because artificial variables are free", "+1, exactly as in the two-phase method"], "ans": 1, "exp": "Module rule: add -Ma when the objective is maximized and +Ma when it is minimized. In a minimization, +M acts as a huge cost that pushes the artificial variable to zero, exactly as -M (huge negative profit) does in maximization."}, {"n": 35, "topic": "Two-Phase Method: Maximization", "diff": "Average", "q": "In the <b>two-phase method<\/b> for a maximization problem, Phase I may proceed to Phase II only when:", "choices": ["the auxiliary objective reaches its optimum W* = 0, meaning every artificial variable equals zero", "the auxiliary objective is strictly positive, W* &gt; 0", "all slack variables equal zero", "the original objective value Z is negative"], "ans": 0, "exp": "Phase I minimizes the sum of the artificial variables. If the optimum W* = 0, all artificials are zero and the final Phase I tableau provides a basic feasible starting solution for Phase II. If W* &gt; 0, the problem is infeasible."}, {"n": 36, "topic": "Two-Phase Method: Minimization", "diff": "Average", "q": "For the minimization problem  Minimize Z = 2x<sub>1<\/sub> + 3x<sub>2<\/sub>  subject to  x<sub>1<\/sub> + x<sub>2<\/sub> &ge; 10,  2x<sub>1<\/sub> + x<sub>2<\/sub> &ge; 14  (surplus and artificial variables A<sub>1<\/sub>, A<sub>2<\/sub> already added), the correct <b>Phase I auxiliary objective function<\/b> is:", "choices": ["Minimize W = 2x<sub>1<\/sub> + 3x<sub>2<\/sub>", "Minimize W = -A<sub>1<\/sub> - A<sub>2<\/sub>", "Minimize W = A<sub>1<\/sub> - A<sub>2<\/sub>", "Minimize W = A<sub>1<\/sub> + A<sub>2<\/sub>"], "ans": 3, "exp": "Phase I ignores the original objective and simply minimizes the sum of the artificial variables, each with coefficient +1 in the minimization case (module rule): Min W = A<sub>1<\/sub> + A<sub>2<\/sub>. The original variables x<sub>1<\/sub>, x<sub>2<\/sub> get coefficient 0."}, {"n": 37, "topic": "Transportation Model: Balanced / Unbalanced", "diff": "Easy", "q": "<table><caption>Supply and demand (in units)<\/caption><tr><th>Plant<\/th><th>Supply<\/th><th>Warehouse<\/th><th>Demand<\/th><\/tr><tr><th>P1<\/th><td>30<\/td><td>W1<\/td><td>25<\/td><\/tr><tr><th>P2<\/th><td>40<\/td><td>W2<\/td><td>45<\/td><\/tr><tr><th>P3<\/th><td>20<\/td><td>W3<\/td><td>30<\/td><\/tr><tr><th>Total<\/th><td>90<\/td><td>Total<\/td><td>100<\/td><\/tr><\/table><br/>Based on the table above, the transportation model is:", "choices": ["balanced, because both totals are below 100", "unbalanced because total supply (90) &ne; total demand (100); add a dummy source (row) with supply 10 and zero costs", "unbalanced because total supply (90) &ne; total demand (100); add a dummy warehouse (column) with demand 10", "balanced, because the difference of 10 is small enough to ignore"], "ans": 1, "exp": "Supply 30 + 40 + 20 = 90 while demand 25 + 45 + 30 = 100. Demand exceeds supply by 10, so a dummy SOURCE (an extra row with 10 units and zero shipping costs) must be added before applying the initial-solution methods. A dummy column is added when supply exceeds demand."}, {"n": 38, "topic": "Northwest Corner Method", "diff": "Average", "q": "<table><caption>Unit shipping costs (Php per unit)<\/caption><tr><th><\/th><th>D1<\/th><th>D2<\/th><th>D3<\/th><th>Supply<\/th><\/tr><tr><th>S1<\/th><td>4<\/td><td>8<\/td><td>7<\/td><td>20<\/td><\/tr><tr><th>S2<\/th><td>5<\/td><td>3<\/td><td>2<\/td><td>30<\/td><\/tr><tr><th>S3<\/th><td>9<\/td><td>6<\/td><td>8<\/td><td>25<\/td><\/tr><tr><th>Demand<\/th><td>15<\/td><td>20<\/td><td>40<\/td><td>75<\/td><\/tr><\/table><br/>Using the <b>Northwest Corner Method<\/b>, the amount allocated to cell (S1, D1) is:", "choices": ["20", "15", "25", "5"], "ans": 1, "exp": "The Northwest Corner Method always starts at the northwest (upper-left) cell (S1, D1) and allocates min(supply S1, demand D1) = min(20, 15) = 15, which exhausts the demand of D1."}, {"n": 39, "topic": "Northwest Corner Method", "diff": "Average", "q": "<table><caption>Unit shipping costs (Php per unit)<\/caption><tr><th><\/th><th>D1<\/th><th>D2<\/th><th>D3<\/th><th>Supply<\/th><\/tr><tr><th>S1<\/th><td>4<\/td><td>8<\/td><td>7<\/td><td>20<\/td><\/tr><tr><th>S2<\/th><td>5<\/td><td>3<\/td><td>2<\/td><td>30<\/td><\/tr><tr><th>S3<\/th><td>9<\/td><td>6<\/td><td>8<\/td><td>25<\/td><\/tr><tr><th>Demand<\/th><td>15<\/td><td>20<\/td><td>40<\/td><td>75<\/td><\/tr><\/table><br/>Using the <b>Northwest Corner Method<\/b> on the table above, the amount allocated to cell (S1, D2) is:", "choices": ["15", "20", "5", "10"], "ans": 2, "exp": "After allocating 15 to (S1, D1), only 20 - 15 = 5 units remain in supply S1, so all 5 move to the next cell on the right, (S1, D2). This exhausts S1 and the allocation moves down to S2."}, {"n": 40, "topic": "Northwest Corner Method", "diff": "Average", "q": "<table><caption>Unit shipping costs (Php per unit)<\/caption><tr><th><\/th><th>D1<\/th><th>D2<\/th><th>D3<\/th><th>Supply<\/th><\/tr><tr><th>S1<\/th><td>4<\/td><td>8<\/td><td>7<\/td><td>20<\/td><\/tr><tr><th>S2<\/th><td>5<\/td><td>3<\/td><td>2<\/td><td>30<\/td><\/tr><tr><th>S3<\/th><td>9<\/td><td>6<\/td><td>8<\/td><td>25<\/td><\/tr><tr><th>Demand<\/th><td>15<\/td><td>20<\/td><td>40<\/td><td>75<\/td><\/tr><\/table><br/>The <b>total transportation cost<\/b> of the Northwest Corner initial feasible solution for the table above is:", "choices": ["Php 315", "Php 375", "Php 405", "Php 420"], "ans": 1, "exp": "NWC allocations: (S1,D1) = 15, (S1,D2) = 5, (S2,D2) = 15, (S2,D3) = 15, (S3,D3) = 25. Cost = 15(4) + 5(8) + 15(3) + 15(2) + 25(8) = 60 + 40 + 45 + 30 + 200 = Php 375."}, {"n": 41, "topic": "Least Cost Method", "diff": "Average", "q": "<table><caption>Unit shipping costs (Php per unit)<\/caption><tr><th><\/th><th>D1<\/th><th>D2<\/th><th>D3<\/th><th>Supply<\/th><\/tr><tr><th>S1<\/th><td>4<\/td><td>8<\/td><td>7<\/td><td>20<\/td><\/tr><tr><th>S2<\/th><td>5<\/td><td>3<\/td><td>2<\/td><td>30<\/td><\/tr><tr><th>S3<\/th><td>9<\/td><td>6<\/td><td>8<\/td><td>25<\/td><\/tr><tr><th>Demand<\/th><td>15<\/td><td>20<\/td><td>40<\/td><td>75<\/td><\/tr><\/table><br/>Using the table above and the <b>Least Cost Method (LCM)<\/b>, the total transportation cost of the initial feasible solution is:", "choices": ["Php 315", "Php 325", "Php 345", "Php 375"], "ans": 0, "exp": "LCM allocates the cheapest cells first: (S2,D3) = 30 at cost 2, (S1,D1) = 15 at cost 4, (S3,D2) = 20 at cost 6, (S1,D3) = 5 at cost 7, (S3,D3) = 5 at cost 8. Total = 60 + 60 + 120 + 35 + 40 = Php 315, better than the NWC cost of 375."}, {"n": 42, "topic": "Vogel's Approximation Method (VAM)", "diff": "Average", "q": "<table><caption>Unit shipping costs (Php per unit)<\/caption><tr><th><\/th><th>D1<\/th><th>D2<\/th><th>D3<\/th><th>Supply<\/th><\/tr><tr><th>S1<\/th><td>4<\/td><td>8<\/td><td>7<\/td><td>20<\/td><\/tr><tr><th>S2<\/th><td>5<\/td><td>3<\/td><td>2<\/td><td>30<\/td><\/tr><tr><th>S3<\/th><td>9<\/td><td>6<\/td><td>8<\/td><td>25<\/td><\/tr><tr><th>Demand<\/th><td>15<\/td><td>20<\/td><td>40<\/td><td>75<\/td><\/tr><\/table><br/>Using the table above and <b>Vogel's Approximation Method (VAM)<\/b>, the FIRST allocation goes to:", "choices": ["(S2, D3) with 30 units, because column D3 has the highest penalty (5)", "(S1, D1) with 15 units, because it is the northwest corner", "(S3, D2) with 20 units, because 6 is the lowest cost in column D2", "(S1, D2) with 20 units, because row S1 has the highest penalty"], "ans": 0, "exp": "VAM penalties (difference of the two smallest costs in each line): rows S1 = 7-4 = 3, S2 = 3-2 = 1, S3 = 8-6 = 2; columns D1 = 5-4 = 1, D2 = 6-3 = 3, D3 = 7-2 = 5. The highest penalty is 5 for column D3, and its cheapest cell is (S2, D3) = 2, so 30 units are allocated there."}, {"n": 43, "topic": "Vogel's Approximation Method (VAM)", "diff": "Difficult", "q": "<table><caption>Unit shipping costs (Php per unit)<\/caption><tr><th><\/th><th>D1<\/th><th>D2<\/th><th>D3<\/th><th>Supply<\/th><\/tr><tr><th>S1<\/th><td>4<\/td><td>8<\/td><td>7<\/td><td>20<\/td><\/tr><tr><th>S2<\/th><td>5<\/td><td>3<\/td><td>2<\/td><td>30<\/td><\/tr><tr><th>S3<\/th><td>9<\/td><td>6<\/td><td>8<\/td><td>25<\/td><\/tr><tr><th>Demand<\/th><td>15<\/td><td>20<\/td><td>40<\/td><td>75<\/td><\/tr><\/table><br/>Continuing <b>VAM<\/b> to completion on the table above, the total transportation cost of the VAM initial feasible solution is:", "choices": ["Php 375", "Php 345", "Php 315", "Php 305"], "ans": 2, "exp": "VAM sequence: (S2,D3) = 30 at 2, (S1,D1) = 15 at 4, (S3,D2) = 20 at 6, (S3,D3) = 5 at 8, (S1,D3) = 5 at 7. Total = 60 + 60 + 120 + 40 + 35 = Php 315 - here VAM matches the Least Cost result and beats NWC (375)."}, {"n": 44, "topic": "Hungarian Method", "diff": "Average", "q": "<table><caption>Cost matrix (Php): workers x jobs<\/caption><tr><th><\/th><th>J1<\/th><th>J2<\/th><th>J3<\/th><\/tr><tr><th>W1<\/th><td>9<\/td><td>2<\/td><td>7<\/td><\/tr><tr><th>W2<\/th><td>6<\/td><td>4<\/td><td>3<\/td><\/tr><tr><th>W3<\/th><td>5<\/td><td>8<\/td><td>1<\/td><\/tr><\/table><br/>Applying the <b>Hungarian Method<\/b>, the row-reduction step subtracts each row's smallest entry (2, 3, 1). After this step, the FIRST row of the reduced matrix is:", "choices": ["[9&nbsp;&nbsp;2&nbsp;&nbsp;7]", "[7&nbsp;&nbsp;0&nbsp;&nbsp;4]", "[0&nbsp;&nbsp;7&nbsp;&nbsp;5]", "[7&nbsp;&nbsp;0&nbsp;&nbsp;5]"], "ans": 3, "exp": "Row 1 reduced by its minimum 2: 9 - 2 = 7, 2 - 2 = 0, 7 - 2 = 5, giving [7 0 5]. (After the following column reduction, the full matrix becomes [4 0 5; 0 1 0; 1 7 0], which contains a zero in every row and column.)"}, {"n": 45, "topic": "Hungarian Method", "diff": "Average", "q": "<table><caption>Cost matrix (Php): workers x jobs<\/caption><tr><th><\/th><th>J1<\/th><th>J2<\/th><th>J3<\/th><\/tr><tr><th>W1<\/th><td>9<\/td><td>2<\/td><td>7<\/td><\/tr><tr><th>W2<\/th><td>6<\/td><td>4<\/td><td>3<\/td><\/tr><tr><th>W3<\/th><td>5<\/td><td>8<\/td><td>1<\/td><\/tr><\/table><br/>Completing the <b>Hungarian Method<\/b> on the matrix above (row reduction, then column reduction, then assignment on the zeros), the <b>minimum total cost<\/b> of the optimal assignment is:", "choices": ["Php 9", "Php 10", "Php 12", "Php 14"], "ans": 0, "exp": "The optimal assignment is W1 to J2, W2 to J1, W3 to J3: cost = 2 + 6 + 1 = Php 9. These are exactly the zero positions of the fully reduced matrix; every other assignment costs 10 or more (the six possibilities are 9, 10, 14, 16, 20, 21)."}, {"n": 46, "topic": "Minimum Spanning Tree", "diff": "Easy", "q": "Which statement about a <b>minimum spanning tree (MST)<\/b> is TRUE?", "choices": ["It connects all n vertices using exactly n - 1 edges with no cycles", "It must include the edge with the largest weight", "It always contains exactly n edges", "It visits every vertex at least twice"], "ans": 0, "exp": "Properties of an MST (Module on MST): it spans (connects) all vertices, uses exactly n - 1 edges, contains no cycles, and has the smallest possible total edge weight. It needs exactly n - 1 edges for n vertices."}, {"n": 47, "topic": "Minimum Spanning Tree", "diff": "Average", "q": "Network edges: A-B = 2, A-C = 3, B-C = 1, B-D = 4, C-D = 7, C-E = 6, D-F = 5, D-E = 9, E-F = 8, C-F = 10 (weights in hundreds of pesos).<br/><br/>Applying <b>Prim's algorithm<\/b> starting at vertex A, the FIRST edge added to the tree is:", "choices": ["A-B, weight 2", "A-C, weight 3", "B-C, weight 1", "C-F, weight 10"], "ans": 0, "exp": "Prim's algorithm grows the tree from the start vertex. From {A} the crossing edges are A-B (2) and A-C (3); the cheaper one, A-B (2), is added first, bringing B into the tree."}, {"n": 48, "topic": "Minimum Spanning Tree", "diff": "Average", "q": "Continuing <b>Prim's algorithm<\/b> on the same network from vertex A (tree = {A, B} after step 1), the SECOND edge added is:", "choices": ["A-C, weight 3", "B-D, weight 4", "C-D, weight 7", "B-C, weight 1"], "ans": 3, "exp": "With the tree {A, B}, the edges crossing to new vertices are A-C (3), B-C (1) and B-D (4). The minimum is B-C (1), so vertex C joins the tree second."}, {"n": 49, "topic": "Minimum Spanning Tree", "diff": "Average", "q": "Using <b>Kruskal's algorithm<\/b> on the same network (edges sorted: B-C 1, A-B 2, A-C 3, B-D 4, D-F 5, C-E 6, C-D 7, ...), which edge is <b>REJECTED<\/b> because it would form a cycle?", "choices": ["B-C, weight 1", "A-B, weight 2", "A-C, weight 3", "B-D, weight 4"], "ans": 2, "exp": "Kruskal accepts B-C (1) and A-B (2), so A, B and C are already connected. The next edge, A-C (3), would close the triangle A-B-C and create a cycle, so it is skipped. (B-D 4, D-F 5 and C-E 6 are then accepted.)"}, {"n": 50, "topic": "Minimum Spanning Tree", "diff": "Difficult", "q": "For the same network, the <b>total weight of the minimum spanning tree<\/b> is:", "choices": ["15", "21", "20", "18"], "ans": 3, "exp": "The MST consists of B-C (1), A-B (2), B-D (4), D-F (5) and C-E (6): total = 1 + 2 + 4 + 5 + 6 = 18. Both Prim's algorithm (from A) and Kruskal's algorithm produce this same tree of 5 = n - 1 edges."}], "topics": [["Operations Research", 2, "Easy 2"], ["Elements of Optimization Model", 2, "Easy 2"], ["Real-World Problems into LP Models", 9, "Easy 3, Average 6"], ["Inequalities", 4, "Easy 2, Average 2"], ["Two-Variable LP: Graphical Method", 1, "Average 1"], ["Elementary Row Operations on Matrices", 4, "Easy 1, Average 3"], ["Simplex Method: 2-Variable Maximization", 6, "Easy 2, Average 3, Difficult 1"], ["Simplex Method: 2-Variable Minimization (Dual)", 3, "Average 2, Difficult 1"], ["Big-M Method: Maximization", 2, "Average 1, Difficult 1"], ["Big-M Method: Minimization", 1, "Easy 1"], ["Two-Phase Method: Maximization", 1, "Average 1"], ["Two-Phase Method: Minimization", 1, "Average 1"], ["Transportation Model: Balanced / Unbalanced", 1, "Easy 1"], ["Northwest Corner Method", 3, "Average 3"], ["Least Cost Method", 1, "Average 1"], ["Vogel's Approximation Method (VAM)", 2, "Average 1, Difficult 1"], ["Hungarian Method", 2, "Average 2"], ["Minimum Spanning Tree", 5, "Easy 1, Average 3, Difficult 1"]]};</script>
 <script>
-// [topic, difficulty, question, correct answer first, 3 wrong answers, explanation]
-const Q=[
-["Operations Research","Easy","Operations Research (OR) is best described as:",["A scientific, model-based approach to decision-making","A purely trial-and-error approach to management","A method used only in computer programming","A way of recording past business transactions"],"OR applies scientific methods and mathematical models to help make better decisions."],
-["Operations Research","Easy","Which is the general sequence of the OR process?",["Define the problem → build the model → solve the model → validate/implement","Solve the model → define the problem → implement → build the model","Build the model → implement → define the problem → solve","Implement → validate → define → solve"],"Define, model, solve, then validate and implement."],
-["Elements of Optimization Model","Easy","In an optimization model, the objective function represents:",["The quantity to be maximized or minimized","The limits on available resources","The unknown quantities to be decided","The set of non-negative values only"],"Objective function = the goal (e.g., maximize profit, minimize cost)."],
-["Elements of Optimization Model","Easy","Constraints in an optimization model are:",["Limitations or restrictions on available resources","The quantity to be maximized","The final answer of the problem","Variables with zero coefficients"],"Constraints restrict the values the decision variables can take (labor hours, materials, budget, etc.)."],
-["Real-World Problems into LP Models","Easy","A bakery produces cakes and pies and wants to decide how many of each to make daily. The decision variables are:",["Number of cakes and number of pies produced daily","The profit per cake and per pie","The oven hours available","The total daily profit"],"Decision variables are the quantities the decision-maker controls."],
-["Real-World Problems into LP Models","Easy","A company wants to meet nutrient requirements of a diet at the lowest possible cost. This LP problem is a:",["Minimization problem","Maximization problem","Transportation problem only","Problem with no objective function"],"Minimizing cost makes it a minimization LP."],
-["Real-World Problems into LP Models","Easy","A chair needs 3 labor hours and a table needs 5 labor hours. At most 120 labor hours are available. If x = chairs and y = tables, the constraint is:",["3x + 5y ≤ 120","3x + 5y ≥ 120","5x + 3y ≤ 120","3x + 5y = 12"],"'At most' means ≤, and each coefficient is the hours per unit of its variable."],
-["Real-World Problems into LP Models","Average","A desk earns ₱40 profit and a shelf earns ₱30 profit. With x desks and y shelves, the objective function is:",["Maximize Z = 40x + 30y","Minimize Z = 40x + 30y","Maximize Z = 30x + 40y","Maximize Z = 70xy"],"Profit is to be maximized; each coefficient is the profit per unit."],
-["Real-World Problems into LP Models","Average","Pill A has 4 units of vitamin C and pill B has 2 units. A patient needs at least 20 units. With x pills A and y pills B, the constraint is:",["4x + 2y ≥ 20","4x + 2y ≤ 20","2x + 4y ≥ 20","4x + 2y = 20"],"'At least' means ≥."],
-["Real-World Problems into LP Models","Average","Toy A earns ₱5 and toy B earns ₱8. A needs 2 machine hours, B needs 3, and 100 machine hours are available. Which LP model is correct?",["Max Z = 5x + 8y s.t. 2x + 3y ≤ 100","Min Z = 5x + 8y s.t. 2x + 3y ≥ 100","Max Z = 2x + 3y s.t. 5x + 8y ≤ 100","Max Z = 5x + 8y s.t. 3x + 2y ≤ 100"],"Maximize profit; machine hours are a limited resource (≤)."],
-["Real-World Problems into LP Models","Average","Feed X costs ₱6/kg, feed Y costs ₱9/kg, and at least 50 kg of mix is needed. Which model is correct?",["Min Z = 6x + 9y s.t. x + y ≥ 50","Max Z = 6x + 9y s.t. x + y ≤ 50","Min Z = 9x + 6y s.t. x + y ≥ 50","Min Z = 6x + 9y s.t. x + y ≤ 50"],"Cost is minimized; 'at least' → ≥."],
-["Real-World Problems into LP Models","Average","A firm must produce at least twice as many units of A as of B (x = A, y = B). This is written as:",["x ≥ 2y","y ≥ 2x","x + y ≥ 2","x ≤ 2y"],"'A at least twice B' → x ≥ 2y, i.e., x − 2y ≥ 0."],
-["Real-World Problems into LP Models","Average","A shop can sell at most 40 items in total and must stock at least 5 of item x. Constraints are:",["x + y ≤ 40 and x ≥ 5","x + y ≥ 40 and x ≤ 5","x + y ≤ 40 and x ≤ 5","x + y = 5 and x ≥ 40"],"Total limit ≤ 40; minimum stock of x ≥ 5."],
-["Inequalities","Easy","Solve: 3x − 5 ≤ 10",["x ≤ 5","x ≥ 5","x ≤ 15/3 + 5","x ≤ 3"],"3x ≤ 15 → x ≤ 5."],
-["Inequalities","Easy","Which point satisfies 2x + 3y ≤ 12?",["(3, 2)","(4, 3)","(5, 2)","(6, 1)"],"(3,2): 6 + 6 = 12 ≤ 12 ✓. Others give 17, 16, 15."],
-["Inequalities","Average","Which point lies inside the feasible region of x + y ≤ 10, 2x + y ≤ 14, x ≥ 0, y ≥ 0?",["(3, 4)","(6, 6)","(8, 3)","(−1, 2)"],"(3,4): 7 ≤ 10 and 10 ≤ 14 ✓. (6,6) and (8,3) break x + y ≤ 10; (−1,2) breaks x ≥ 0."],
-["Inequalities","Average","The region above the line y = 2x + 1 is represented by:",["y ≥ 2x + 1","y ≤ 2x + 1","x ≥ 2y + 1","y ≥ 2x − 1"],"'Above' a line means larger y, so y ≥ (line)."],
-["Two-Variable LP: Graphical Method","Average","Maximize Z = 3x + 2y subject to x + y ≤ 4, x ≤ 3, x, y ≥ 0. The maximum value of Z is:",["11","12","9","8"],"Corners: (0,0)=0, (3,0)=9, (3,1)=11, (0,4)=8. Max = 11 at (3,1)."],
-["Elementary Row Operations","Easy","Which is NOT a valid elementary row operation?",["Multiplying a row by 0","Swapping two rows","Multiplying a row by a nonzero constant","Adding a multiple of one row to another"],"Multiplying by zero destroys information and is not reversible."],
-["Elementary Row Operations","Average","Apply (1/2)R1 to the row [2  4 | 6]. The result is:",["[1  2 | 3]","[1  4 | 6]","[4  8 | 12]","[1  2 | 6]"],"Scale every entry, including the constant: 1, 2, 3."],
-["Elementary Row Operations","Average","Given R1 = [1  2 | 5] and R2 = [3  4 | 11], R2 ← R2 − 3R1 gives:",["[0  −2 | −4]","[0  −2 | 26]","[0  10 | 26]","[3  −2 | −4]"],"3 − 3 = 0; 4 − 6 = −2; 11 − 15 = −4."],
-["Elementary Row Operations","Average","Solve by elimination: 2x + y = 7 and x − y = 2.",["x = 3, y = 1","x = 2, y = 3","x = 1, y = 3","x = 4, y = 2"],"Add the equations: 3x = 9 → x = 3, then y = 1."],
-["Simplex Method (Maximization)","Easy","Max Z = 3x + 2y has three ≤ constraints. How many slack variables are in the standard form?",["3","2","5","1"],"One slack variable is added per ≤ constraint."],
-["Simplex Method (Maximization)","Easy","Initial tableau Z-row: Z − 5x − 3y = 0. The entering variable is:",["x","y","Z","A slack variable"],"Choose the most negative Z-row entry (−5 → x)."],
-["Simplex Method (Maximization)","Average","Max Z = 3x + 5y; x + 2y ≤ 12; 3x + 2y ≤ 18. After y enters, which variable leaves (minimum ratio test)?",["s1 (ratio 12/2 = 6)","s2 (ratio 18/2 = 9)","x","y"],"Ratios: 6 and 9. Smallest is 6, so row 1's slack s1 leaves."],
-["Simplex Method (Maximization)","Average","Max Z = 4x + 3y; 2x + y ≤ 10; x + y ≤ 8. The value of Z after the first pivot is:",["20","30","24","0"],"x enters; ratios 5 and 8 → pivot on row 1, x = 5, Z = 4(5) = 20."],
-["Simplex Method (Maximization)","Average","Max Z = 2x + 3y; x + y ≤ 5; x + 2y ≤ 8; x, y ≥ 0. The optimal Z is:",["13","12","10","15"],"Corners: (5,0)=10, (2,3)=13, (0,4)=12. Max = 13."],
-["Simplex Method (Maximization)","Difficult","Max Z = 40x + 30y; x + y ≤ 12; 2x + y ≤ 16; x, y ≥ 0. The optimal solution is:",["x = 4, y = 8, Z = 400","x = 8, y = 0, Z = 320","x = 0, y = 12, Z = 360","x = 6, y = 4, Z = 360"],"Corners: (8,0)=320, (4,8)=400, (0,12)=360. Max Z = 400 at (4,8)."],
-["Simplex Method (Minimization)","Average","Min C = 3x + 2y; x + y ≥ 4; x + 3y ≥ 6; x, y ≥ 0. The minimum value of C is:",["8","11","18","6"],"Corners: (0,4)=8, (3,1)=11, (6,0)=18. Min = 8."],
-["Simplex Method (Minimization)","Average","Min C = 12x + 16y; x + 2y ≥ 40; x + y ≥ 30. Using the dual (transpose) the minimum cost equals:",["400","480","240","360"],"Corners: (20,10)=400, (40,0)=480, (0,30)=480. Min = 400."],
-["Simplex Method (Minimization)","Difficult","Min C = 5x + 4y; 2x + y ≥ 8; x + 3y ≥ 9. The dual problem is:",["Max P = 8u + 9v; 2u + v ≤ 5; u + 3v ≤ 4","Max P = 5u + 4v; 2u + v ≤ 8; u + 3v ≤ 9","Min P = 8u + 9v; 2u + v ≥ 5; u + 3v ≥ 4","Max P = 8u + 9v; 2u + u ≤ 5; v + 3v ≤ 4"],"Transpose the augmented matrix: constants become the dual objective, and the old objective coefficients become the dual constraint limits."],
-["Big-M Method (Maximization)","Average","For Max Z = 3x + 5y with constraint x + y ≥ 2 (surplus s1, artificial A1), the Big-M objective is:",["Z = 3x + 5y − M·A1","Z = 3x + 5y + M·A1","Z = 3x + 5y − M·s1","Z = 3x + 5y + s1 − A1"],"In maximization, artificial variables are penalized with −M."],
-["Big-M Method (Maximization)","Difficult","A final Big-M tableau is optimal but an artificial variable is still positive in the basis. The problem is:",["Infeasible","Unbounded","Optimal with alternative solutions","Degenerate but optimal"],"A positive artificial variable at optimality means no feasible solution exists."],
-["Big-M Method (Minimization)","Easy","In Big-M minimization, the penalty M for an artificial variable is added to the objective as:",["+M·A","−M·A","+M·s","0·A"],"Minimization uses +M·A so artificial variables are driven out."],
-["Two-Phase Method (Maximization)","Average","Phase I ends and Phase II begins when:",["The auxiliary objective W* = 0","W* > 0","All slack variables are 0","Z = 0"],"W* = 0 means all artificial variables are zero, so a feasible solution exists."],
-["Two-Phase Method (Minimization)","Average","The Phase I auxiliary objective for a problem with artificial variables A1 and A2 is:",["Minimize W = A1 + A2","Maximize W = A1 + A2","Minimize W = x + y","Minimize W = M(A1 + A2)"],"Phase I minimizes the sum of the artificial variables."],
-["Transportation Model","Easy","Supplies are 100 and 150; demands are 80, 90 and 100. This transportation model is:",["Unbalanced (supply 250 ≠ demand 270)","Balanced","Balanced with 3 sources","Infeasible with no solution"],"250 ≠ 270, so a dummy source is needed."],
-["Northwest Corner Method","Average","Supply S1=20, S2=30; Demand D1=10, D2=25, D3=15. Costs: S1 = 4, 6, 8; S2 = 5, 3, 7. Total cost by the Northwest Corner Method:",["250","220","235","270"],"S1D1 10(40), S1D2 10(60), S2D2 15(45), S2D3 15(105) = 250."],
-["Northwest Corner Method","Average","Supply 40, 60; Demand 30, 45, 25. Costs: S1 = 3, 5, 2; S2 = 4, 1, 6. NWC total cost:",["325","290","310","355"],"30×3 + 10×5 + 35×1 + 25×6 = 90 + 50 + 35 + 150 = 325."],
-["Northwest Corner Method","Average","Supply 30, 40, 30; Demand 20, 30, 25, 25. Costs: R1 = 2,3,5,4; R2 = 6,4,3,5; R3 = 3,7,2,6. NWC total cost:",["370","340","395","410"],"20×2 + 10×3 + 20×4 + 20×3 + 5×2 + 25×6 = 40+30+80+60+10+150 = 370."],
-["Least Cost Method","Average","Supply 30, 20; Demand 15, 20, 15. Costs: S1 = 5, 2, 6; S2 = 4, 3, 1. Total cost by the Least Cost Method:",["125","110","140","155"],"Cell cost 1: 15 units (15); cost 2: 20 units (40); then S2D1 5×4 = 20 and S1D1 10×5 = 50. Total 125."],
-["Vogel's Approximation Method","Average","In VAM, the row penalty of a row with costs 7, 3, 9 is:",["4","2","6","3"],"Penalty = second-smallest − smallest = 7 − 3 = 4."],
-["Vogel's Approximation Method","Difficult","Supply 20, 30; Demand 10, 25, 15. Costs: S1 = 8, 6, 10; S2 = 9, 12, 13. Total cost by VAM:",["465","450","480","510"],"Largest penalty is column D2 (12−6 = 6): ship 20 from S1 at 6 (120). Then S2 ships 10×9 + 5×12 + 15×13 = 345. Total 465."],
-["Hungarian Method","Average","Assignment cost matrix: [9,2,7],[6,4,3],[5,8,1]. The minimum total cost is:",["9","10","14","8"],"Row/column reduction gives assignment 1→2 (2), 2→1 (6), 3→3 (1) = 9."],
-["Hungarian Method","Average","Assignment cost matrix: [8,6,10],[7,9,5],[4,5,6]. The minimum total cost is:",["15","18","19","12"],"Best assignment: 1→2 (6), 2→3 (5), 3→1 (4) = 15."],
-["Minimum Spanning Tree","Easy","A spanning tree of a connected graph with 8 vertices has how many edges?",["7","8","9","6"],"A tree with n vertices has n − 1 edges."],
-["Minimum Spanning Tree","Average","Graph edges: AB=4, AC=2, BC=1, BD=5, CD=8, CE=10, DE=2. Using Prim's starting at A, after A and C the next vertex added is:",["B (edge BC = 1)","D","E","A"],"From {A, C}, the cheapest connecting edge is BC = 1."],
-["Minimum Spanning Tree","Average","Same graph (AB=4, AC=2, BC=1, BD=5, CD=8, CE=10, DE=2). Using Kruskal's algorithm, the first edge excluded because it forms a cycle is:",["AB (4)","BD (5)","DE (2)","AC (2)"],"Order: BC(1), AC(2), DE(2), then AB(4) closes cycle A–B–C and is rejected."],
-["Minimum Spanning Tree","Average","Same graph. The total cost of the MST using Prim's algorithm is:",["10","12","14","8"],"Edges: BC 1 + AC 2 + DE 2 + BD 5 = 10."],
-["Minimum Spanning Tree","Difficult","Edges: (1,2)=1, (2,5)=3, (4,6)=3, (2,4)=4, (1,3)=5, (3,4)=5, (2,3)=6, (1,4)=7, (4,5)=8, (1,5)=9, (3,6)=10. The MST total cost is:",["16","18","14","20"],"Kruskal picks 1+3+3+4+5 = 16 (5 edges for 6 nodes); (3,4)=5 would form a cycle."]
-];
-const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
-const topics=[...new Set(Q.map(q=>q[0]))];
-const app=document.getElementById('app');let S;
-function home(){
-app.innerHTML=`<h1>MATH 304 – Quantitative Methods</h1><div class="mut">Final departmental exam reviewer · ${Q.length} items (Easy 15 · Average 30 · Difficult 5). Sample items for topics without slides are included.</div>
-<div class="card"><label>Topic<br><select id="t" style="width:100%;padding:10px;margin:6px 0 12px;background:var(--bg);border:1px solid var(--bd);border-radius:8px"><option value="">All topics (full 50-item exam)</option>${topics.map(t=>`<option>${t}</option>`).join('')}</select></label>
-<label><input type="checkbox" id="sh" checked> Shuffle questions</label><br><label><input type="checkbox" id="ex"> Exam mode (answers shown only at the end)</label><br><br><button class="p" id="go">Start</button></div>`;
-go.onclick=()=>{let l=Q.filter(q=>!t.value||q[0]===t.value);if(sh.checked)l=shuf(l);
-S={i:0,sc:0,exam:ex.checked,done:false,items:l.map(q=>({q,o:shuf(q[3].map((x,k)=>[x,k==0])),pick:null}))};show()}}
-function show(){const it=S.items[S.i],q=it.q,n=S.items.length;
-app.innerHTML=`<div class="row" style="justify-content:space-between"><span class="mut">Question ${S.i+1} of ${n}</span><button onclick="home()">Quit</button></div><div class="bar"><i style="width:${S.i/n*100}%"></i></div>
-<div class="card"><span class="tag">${q[0]}</span><span class="tag">${q[1]}</span><pre>${q[2]}</pre>${it.o.map((o,k)=>`<button class="opt" data-k="${k}">${'ABCD'[k]}. ${o[0]}</button>`).join('')}<div id="fb"></div></div><div class="row"><button class="p" id="nx" style="display:none">${S.i==n-1?'Finish':'Next'}</button></div>`;
-const bs=[...document.querySelectorAll('.opt')];
-const mark=()=>{bs.forEach((b,k)=>{b.disabled=true;if(it.o[k][1])b.classList.add('ok');else if(it.pick==k)b.classList.add('no')});
-fb.innerHTML=`<div class="ex"><b>${it.o[it.pick][1]?'Correct.':'Incorrect.'}</b> ${q[4]}</div>`};
-bs.forEach(b=>b.onclick=()=>{it.pick=+b.dataset.k;if(it.o[it.pick][1])S.sc++;
-if(S.exam){bs.forEach(x=>{x.disabled=true});b.classList.add('ok')}else mark();nx.style.display='';});
-nx.onclick=()=>{S.i++;S.i<n?show():end()}}
-function end(){const n=S.items.length;const miss=S.items.filter(x=>!x.o[x.pick]?.[1]);
-app.innerHTML=`<h1>Score: ${S.sc} / ${n} (${Math.round(S.sc/n*100)}%)</h1><div class="row"><button class="p" onclick="home()">Back to start</button></div>
-${S.items.map((x,k)=>`<div class="card"><span class="tag">${k+1}. ${x.q[0]}</span><pre>${x.q[2]}</pre><div>Your answer: <b style="color:var(--${x.o[x.pick][1]?'ok':'no'})">${x.o[x.pick][0]}</b></div>${x.o[x.pick][1]?'':`<div>Correct: <b style="color:var(--ok)">${x.q[3][0]}</b></div>`}<div class="ex">${x.q[4]}</div></div>`).join('')}`}
-home();
-</script></body></html>
+(function(){
+"use strict";
+var S = null;                 // session state
+var SAVE_KEY = "math304_reviewer_v1";
+var $ = function(id){ return document.getElementById(id); };
+var screens = { start:$("screen-start"), quiz:$("screen-quiz"), result:$("screen-result") };
+
+function show(name){
+  Object.keys(screens).forEach(function(k){ screens[k].hidden = (k !== name); });
+  window.scrollTo(0,0);
+}
+function shuffleArr(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; } return a; }
+function fmtTime(sec){ sec=Math.max(0,sec); var m=Math.floor(sec/60), s=sec%60; return (m<10?"0":"")+m+":"+(s<10?"0":"")+s; }
+
+/* ---------- start screen ---------- */
+function renderTos(){
+  var ul = $("tos-list"); ul.innerHTML = "";
+  QUIZ.topics.forEach(function(t){
+    var li = document.createElement("li");
+    li.innerHTML = "<span>"+t[0]+"</span><span class='cnt'>"+t[1]+" item"+(t[1]>1?"s":"")+" &middot; "+t[2]+"</span>";
+    ul.appendChild(li);
+  });
+}
+function checkSaved(){
+  try{
+    var raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return;
+    var d = JSON.parse(raw);
+    if(d && d.mode && !d.done && d.answers){ $("resume-box").hidden = false; }
+  }catch(e){}
+}
+function loadSaved(){ try{ return JSON.parse(localStorage.getItem(SAVE_KEY)); }catch(e){ return null; } }
+function save(){
+  if(!S || S.done) return;
+  try{ localStorage.setItem(SAVE_KEY, JSON.stringify({
+    mode:S.mode, order:S.order, pos:S.pos, answers:S.answers, flags:S.flags,
+    remaining:S.remaining, limit:S.limit, startedAt:S.startedAt, done:false
+  })); }catch(e){}
+}
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+
+/* ---------- quiz ---------- */
+function newSession(mode, opts){
+  var order = QUIZ.questions.map(function(q,i){ return i; });
+  if(opts.shuffle) shuffleArr(order);
+  S = {
+    mode:mode, order:order, pos:0, answers:{}, flags:{},
+    remaining:(mode==="exam" && opts.limit>0) ? opts.limit*60 : 0,
+    limit:opts.limit, startedAt:Date.now(), done:false, review:false
+  };
+  save();
+  buildPalette();
+  show("quiz");
+  $("btn-submit").hidden = (mode!=="exam");
+  $("timer").hidden = !(mode==="exam" && opts.limit>0);
+  $("pal-title").textContent = mode==="exam" ? "Exam palette" : "Practice palette";
+  renderLegend();
+  renderQuestion();
+  startTicker();
+}
+function resumeSession(d){
+  S = { mode:d.mode, order:d.order, pos:d.pos, answers:d.answers||{}, flags:d.flags||{},
+        remaining:d.remaining, limit:d.limit, startedAt:d.startedAt||Date.now(), done:false, review:false };
+  buildPalette(); show("quiz");
+  $("btn-submit").hidden = (S.mode!=="exam");
+  $("timer").hidden = !(S.mode==="exam" && S.limit>0);
+  $("pal-title").textContent = S.mode==="exam" ? "Exam palette" : "Practice palette";
+  renderLegend(); renderQuestion(); startTicker();
+}
+var ticker=null;
+function startTicker(){
+  if(ticker) clearInterval(ticker);
+  ticker = setInterval(function(){
+    if(!S || S.done || S.review) return;
+    if(S.mode==="exam" && S.limit>0){
+      S.remaining--;
+      var t=$("timer"); t.textContent=fmtTime(S.remaining);
+      t.className = "timer"+(S.remaining<=300?" low":"");
+      if(S.remaining<=0){ t.textContent="00:00"; finishExam(true); }
+      if(S.remaining%5===0) save();
+    }
+  },1000);
+  if(S && S.mode==="exam" && S.limit>0){ var t=$("timer"); t.textContent=fmtTime(S.remaining); t.className="timer"+(S.remaining<=300?" low":""); }
+}
+function qAt(pos){ return QUIZ.questions[S.order[pos]]; }
+function answeredCount(){ var n=0; S.order.forEach(function(i){ if(S.answers[i]!=null) n++; }); return n; }
+
+function buildPalette(){
+  var g=$("pal-grid"); g.innerHTML="";
+  S.order.forEach(function(qi,idx){
+    var b=document.createElement("button");
+    b.className="pal-btn"; b.textContent=idx+1;
+    b.setAttribute("aria-label","Question "+(idx+1));
+    b.addEventListener("click",function(){ S.pos=idx; renderQuestion(); });
+    g.appendChild(b);
+  });
+}
+function renderLegend(){
+  var lg=$("pal-legend");
+  if(S.mode==="exam"){
+    lg.innerHTML = "<span><i class='dot f'></i> answered</span><span><i class='dot o'></i> flagged</span><span><i class='dot'></i> unanswered</span>";
+  } else {
+    lg.innerHTML = "<span><i class='dot g'></i> correct</span><span><i class='dot r'></i> wrong</span><span><i class='dot o'></i> flagged</span><span><i class='dot'></i> unanswered</span>";
+  }
+}
+function renderPalette(){
+  var btns = $("pal-grid").children;
+  S.order.forEach(function(qi,idx){
+    var b=btns[idx]; b.className="pal-btn";
+    var a=S.answers[qi];
+    if(S.review || S.done){
+      if(a!=null){ b.classList.add(a===QUIZ.questions[qi].ans?"correct":"wrong"); }
+    } else if(a!=null){
+      b.classList.add(S.mode==="practice" ? (a===QUIZ.questions[qi].ans?"correct":"wrong") : "answered");
+    }
+    if(S.flags[qi]) b.innerHTML = (idx+1)+" <span class='fdot'></span>"; else b.textContent=idx+1;
+    if(idx===S.pos) b.classList.add("cur");
+  });
+  var pct = Math.round(answeredCount()/S.order.length*100);
+  $("progbar").style.width = pct+"%";
+  $("pcount").textContent = answeredCount()+" of "+S.order.length+" answered";
+}
+function renderQuestion(){
+  var q = qAt(S.pos), qi = S.order[S.pos];
+  $("qno").textContent = "Item "+q.n+" of 50";
+  $("qtopic").textContent = q.topic;
+  $("qdiff").textContent = q.diff;
+  $("qdiff").className = "chip d-"+q.diff;
+  $("btn-flag").className = "flagbtn"+(S.flags[qi]?" on":"");
+  $("btn-flag").innerHTML = "&#9873; "+(S.flags[qi]?"Flagged":"Flag");
+  $("qtext").innerHTML = q.q;
+  var locked = S.review || S.done || (S.mode==="practice" && S.answers[qi]!=null);
+  var box=$("choices"); box.innerHTML="";
+  q.choices.forEach(function(c,i){
+    var b=document.createElement("button");
+    b.className="choice"; b.innerHTML="<span class='letter'>"+"ABCD"[i]+"</span><span>"+c+"</span>";
+    b.disabled = locked;
+    if(S.answers[qi]!=null && i===S.answers[qi]){
+      if(S.review || S.done) b.classList.add(i===q.ans?"correct":"wrong");
+      else b.classList.add(S.answers[qi]===q.ans?"correct":"wrong");
+    } else if(S.answers[qi]!=null && i===q.ans){
+      b.classList.add("correct");
+    } else if(S.answers[qi]!=null){
+      b.classList.add("dim");
+    }
+    b.addEventListener("click",function(){ selectChoice(i); });
+    box.appendChild(b);
+  });
+  var ex=$("explain");
+  if((S.mode==="practice" && S.answers[qi]!=null) || S.review || S.done){
+    ex.hidden=false;
+    var good = S.answers[qi]===q.ans;
+    var head = (S.review||S.done)
+      ? (S.answers[qi]==null ? "Not answered" : (good?"Correct!":"Incorrect"))
+      : (good?"Correct!":"Incorrect");
+    var yourLine = (S.answers[qi]==null) ? "" :
+      "<br/><b>Your answer:</b> "+"ABCD"[S.answers[qi]]+". "+q.choices[S.answers[qi]];
+    if(S.review||S.done) yourLine = "<b>Correct answer:</b> "+"ABCD"[q.ans]+". "+q.choices[q.ans]+
+        (S.answers[qi]==null ? "" : "<br/><b>Your answer:</b> "+"ABCD"[S.answers[qi]]+". "+q.choices[S.answers[qi]]);
+    ex.innerHTML = "<div class='ex-title'>"+head+"</div>"+yourLine+"<br/><b>Explanation:</b> "+q.exp;
+  } else { ex.hidden=true; ex.innerHTML=""; }
+  $("btn-prev").disabled = (S.pos===0);
+  $("btn-next").innerHTML = (S.pos===S.order.length-1) ? "Finish &#8594;" : "Next &#8594;";
+  renderPalette();
+}
+function selectChoice(i){
+  if(!S || S.review || S.done) return;
+  var qi=S.order[S.pos];
+  if(S.mode==="practice" && S.answers[qi]!=null) return;  // practice locks after first answer
+  S.answers[qi]=i;
+  save();
+  renderQuestion();
+}
+function prevQ(){ if(S.pos>0){ S.pos--; renderQuestion(); } }
+function nextQ(){
+  if(S.pos < S.order.length-1){ S.pos++; renderQuestion(); }
+  else if(S.mode==="exam"){ askSubmit(); }
+  else { if(answeredCount()<S.order.length){ confirmModal("Finish practice?","You have answered "+answeredCount()+" of "+S.order.length+" items. Unanswered items count as wrong.", finishPractice); } else finishPractice(); }
+}
+
+/* ---------- submit / results ---------- */
+function confirmModal(title,msg,cb){
+  $("modal-title").textContent=title; $("modal-msg").textContent=msg;
+  $("modal").hidden=false;
+  $("modal-ok").onclick=function(){ $("modal").hidden=true; cb(); };
+  $("modal-cancel").onclick=function(){ $("modal").hidden=true; };
+}
+function askSubmit(){
+  var un = S.order.length - answeredCount();
+  confirmModal("Submit exam?", un>0
+    ? "You still have "+un+" unanswered item"+(un>1?"s":"")+". Unanswered items are marked wrong. Submit anyway?"
+    : "All items answered. Submit and see your results?", finishExam);
+}
+function finishExam(auto){
+  if(S.done) return;
+  S.done=true;
+  var elapsed = Math.round((Date.now()-S.startedAt)/1000);
+  clearSave();
+  renderResult(elapsed, auto?"Time is up - the exam was submitted automatically.":"Exam submitted.");
+}
+function finishPractice(){
+  S.done=true;
+  var elapsed = Math.round((Date.now()-S.startedAt)/1000);
+  clearSave();
+  renderResult(elapsed, "Practice session finished.");
+}
+function renderResult(elapsed, subMsg){
+  if(ticker) clearInterval(ticker);
+  var correct=0,wrong=0,skip=0;
+  S.order.forEach(function(qi){
+    var q=QUIZ.questions[qi], a=S.answers[qi];
+    if(a==null) skip++; else if(a===q.ans) correct++; else wrong++;
+  });
+  var total=S.order.length, pct=Math.round(correct/total*1000)/10;
+  show("result");
+  $("ring").style.setProperty("--p",pct);
+  $("score-pct").textContent=pct+"%";
+  $("result-title").textContent = S.mode==="exam" ? "Exam results" : "Practice results";
+  $("result-sub").textContent = subMsg + (" You answered "+correct+" of "+total+" items correctly.");
+  $("st-correct").textContent=correct; $("st-wrong").textContent=wrong; $("st-skip").textContent=skip;
+  $("st-time").textContent = S.mode==="exam"&&S.limit>0 ? fmtTime(Math.max(0,S.remaining)) : fmtTime(elapsed);
+  /* by topic */
+  var tt={}, order=[];
+  S.order.forEach(function(qi){
+    var q=QUIZ.questions[qi], a=S.answers[qi];
+    if(!tt[q.topic]){ tt[q.topic]={c:0,t:0}; order.push(q.topic); }
+    tt[q.topic].t++; if(a===q.ans) tt[q.topic].c++;
+  });
+  var t1=$("tbl-topic"); t1.innerHTML="<tr><th>Topic</th><th style='text-align:right'>Score</th><th>Rate</th></tr>";
+  order.forEach(function(topic){
+    var e=tt[topic], r=Math.round(e.c/e.t*100);
+    var tr=document.createElement("tr");
+    tr.innerHTML="<td>"+topic+"</td><td class='num'>"+e.c+" / "+e.t+"</td><td><div class='bar'><div style='width:"+r+"%'></div></div></td>";
+    t1.appendChild(tr);
+  });
+  /* by difficulty */
+  var dd={};
+  S.order.forEach(function(qi){
+    var q=QUIZ.questions[qi], a=S.answers[qi];
+    if(!dd[q.diff]) dd[q.diff]={c:0,t:0};
+    dd[q.diff].t++; if(a===q.ans) dd[q.diff].c++;
+  });
+  var t2=$("tbl-diff"); t2.innerHTML="<tr><th>Difficulty</th><th style='text-align:right'>Score</th><th>Rate</th></tr>";
+  ["Easy","Average","Difficult"].forEach(function(d){
+    if(!dd[d]) return;
+    var e=dd[d], r=Math.round(e.c/e.t*100);
+    var tr=document.createElement("tr");
+    tr.innerHTML="<td>"+d+"</td><td class='num'>"+e.c+" / "+e.t+"</td><td><div class='bar'><div style='width:"+r+"%'></div></div></td>";
+    t2.appendChild(tr);
+  });
+  $("review-list").innerHTML="";
+}
+function renderReview(){
+  show("result");
+  var list=$("review-list"); list.innerHTML="<h2 style='font-size:20px;margin:8px 0 12px'>Answer review</h2>";
+  S.order.forEach(function(qi,idx){
+    var q=QUIZ.questions[qi], a=S.answers[qi];
+    var state = a==null?"skip":(a===q.ans?"ok":"bad");
+    var stTxt = a==null?"Not answered":(a===q.ans?"Correct":"Wrong");
+    var item=document.createElement("div"); item.className="review-item";
+    var ch=q.choices.map(function(c,i){
+      var cls="choice"; var extra="";
+      if(i===q.ans) cls+=" correct";
+      else if(i===a) cls+=" wrong";
+      else extra=" style='opacity:.6'";
+      return "<button class='"+cls+"' disabled"+extra+"><span class='letter'>"+"ABCD"[i]+"</span><span>"+c+"</span></button>";
+    }).join("");
+    item.innerHTML="<div class='rhead'><span class='qno'>Item "+q.n+"</span>"+
+      "<span class='chip'>"+q.topic+"</span><span class='chip d-"+q.diff+"'>"+q.diff+"</span>"+
+      "<span class='badge "+state+"'>"+stTxt+"</span></div>"+
+      "<div class='rtext'>"+q.q+"</div>"+
+      "<div class='choices' style='margin-top:10px'>"+ch+"</div>"+
+      "<div class='rans'><span class='lbl'>Correct answer: <span class='your ok'>"+"ABCD"[q.ans]+"</span></span>"+
+      (a==null?"":" &nbsp;&middot;&nbsp; <span class='lbl'>Your answer: <span class='your "+(state==="ok"?"ok":"bad")+"'>"+"ABCD"[a]+"</span></span>")+
+      "<br/><b>Explanation:</b> "+q.exp+"</div>";
+    list.appendChild(item);
+  });
+  list.scrollIntoView();
+}
+
+/* ---------- wiring ---------- */
+$("btn-practice").addEventListener("click",function(){
+  newSession("practice",{shuffle:$("chk-shuffle").checked,limit:0});
+});
+$("btn-exam").addEventListener("click",function(){
+  newSession("exam",{shuffle:$("chk-shuffle").checked,limit:parseInt($("sel-timer").value,10)});
+});
+$("btn-resume").addEventListener("click",function(){ var d=loadSaved(); if(d) resumeSession(d); });
+$("btn-discard").addEventListener("click",function(){ clearSave(); $("resume-box").hidden=true; });
+$("btn-prev").addEventListener("click",prevQ);
+$("btn-next").addEventListener("click",nextQ);
+$("btn-flag").addEventListener("click",function(){
+  var qi=S.order[S.pos]; S.flags[qi]=!S.flags[qi]; save(); renderQuestion();
+});
+$("btn-submit").addEventListener("click",askSubmit);
+$("btn-review").addEventListener("click",renderReview);
+$("btn-retake").addEventListener("click",function(){
+  newSession(S.mode,{shuffle:$("chk-shuffle").checked,limit:S.limit});
+});
+$("btn-home").addEventListener("click",function(){ S=null; show("start"); checkSaved(); });
+
+document.addEventListener("keydown",function(e){
+  if(screens.quiz.hidden || !S) return;
+  if(e.key==="ArrowRight") nextQ();
+  else if(e.key==="ArrowLeft") prevQ();
+  else if(e.key==="f"||e.key==="F") $("btn-flag").click();
+  else{
+    var k=e.key.toLowerCase(), idx=-1;
+    if(k==="1"||k==="a") idx=0; else if(k==="2"||k==="b") idx=1;
+    else if(k==="3"||k==="c") idx=2; else if(k==="4"||k==="d") idx=3;
+    if(idx>=0){ var b=$("choices").children[idx]; if(b && !b.disabled) b.click(); }
+  }
+});
+
+renderTos(); checkSaved(); show("start");
+})();
+</script>
+</body>
+</html>
