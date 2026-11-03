@@ -1,0 +1,92 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>MATH 304 Final Exam Reviewer</title>
+<style>
+:root{--bg:#fff;--fg:#1f2328;--mut:#666;--card:#f6f7f9;--bd:#d0d5dd;--ac:#b8860b;--ok:#1a7f37;--okb:#e6f4ea;--no:#c62828;--nob:#fdeaea}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#17181b;--fg:#e8e8e8;--mut:#9aa0a6;--card:#222428;--bd:#3a3d44;--ac:#f2b705;--ok:#5fd07a;--okb:#16301f;--no:#ff7b7b;--nob:#3a1d1d}}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom))}
+main{max-width:760px;margin:auto}h1{font-size:1.3rem;margin:0 0 4px}.mut{color:var(--mut);font-size:.9rem}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:12px 0}
+button,select{font:inherit;color:var(--fg)}button{cursor:pointer;border:1px solid var(--bd);background:var(--bg);border-radius:8px;padding:10px 14px}
+button.p{background:var(--ac);color:#000;border-color:var(--ac);font-weight:600}
+.opt{display:block;width:100%;text-align:left;margin:8px 0}.opt.ok{background:var(--okb);border-color:var(--ok)}.opt.no{background:var(--nob);border-color:var(--no)}
+.bar{height:6px;background:var(--bd);border-radius:3px}.bar i{display:block;height:100%;background:var(--ac);border-radius:3px}
+.tag{font-size:.75rem;border:1px solid var(--bd);border-radius:99px;padding:2px 8px;margin-right:6px}
+.ex{margin-top:10px;padding:10px;border-left:3px solid var(--ac);background:var(--bg)}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+pre{white-space:pre-wrap;margin:8px 0;font-family:inherit}
+</style></head><body><main id="app"></main>
+<script>
+// [topic, difficulty, question, correct answer first, 3 wrong answers, explanation]
+const Q=[
+["Operations Research","Easy","Operations Research (OR) is best described as:",["A scientific, model-based approach to decision-making","A purely trial-and-error approach to management","A method used only in computer programming","A way of recording past business transactions"],"OR applies scientific methods and mathematical models to help make better decisions."],
+["Operations Research","Easy","Which is the general sequence of the OR process?",["Define the problem → build the model → solve the model → validate/implement","Solve the model → define the problem → implement → build the model","Build the model → implement → define the problem → solve","Implement → validate → define → solve"],"Define, model, solve, then validate and implement."],
+["Elements of Optimization Model","Easy","In an optimization model, the objective function represents:",["The quantity to be maximized or minimized","The limits on available resources","The unknown quantities to be decided","The set of non-negative values only"],"Objective function = the goal (e.g., maximize profit, minimize cost)."],
+["Elements of Optimization Model","Easy","Constraints in an optimization model are:",["Limitations or restrictions on available resources","The quantity to be maximized","The final answer of the problem","Variables with zero coefficients"],"Constraints restrict the values the decision variables can take (labor hours, materials, budget, etc.)."],
+["Real-World Problems into LP Models","Easy","A bakery produces cakes and pies and wants to decide how many of each to make daily. The decision variables are:",["Number of cakes and number of pies produced daily","The profit per cake and per pie","The oven hours available","The total daily profit"],"Decision variables are the quantities the decision-maker controls."],
+["Real-World Problems into LP Models","Easy","A company wants to meet nutrient requirements of a diet at the lowest possible cost. This LP problem is a:",["Minimization problem","Maximization problem","Transportation problem only","Problem with no objective function"],"Minimizing cost makes it a minimization LP."],
+["Real-World Problems into LP Models","Easy","A chair needs 3 labor hours and a table needs 5 labor hours. At most 120 labor hours are available. If x = chairs and y = tables, the constraint is:",["3x + 5y ≤ 120","3x + 5y ≥ 120","5x + 3y ≤ 120","3x + 5y = 12"],"'At most' means ≤, and each coefficient is the hours per unit of its variable."],
+["Real-World Problems into LP Models","Average","A desk earns ₱40 profit and a shelf earns ₱30 profit. With x desks and y shelves, the objective function is:",["Maximize Z = 40x + 30y","Minimize Z = 40x + 30y","Maximize Z = 30x + 40y","Maximize Z = 70xy"],"Profit is to be maximized; each coefficient is the profit per unit."],
+["Real-World Problems into LP Models","Average","Pill A has 4 units of vitamin C and pill B has 2 units. A patient needs at least 20 units. With x pills A and y pills B, the constraint is:",["4x + 2y ≥ 20","4x + 2y ≤ 20","2x + 4y ≥ 20","4x + 2y = 20"],"'At least' means ≥."],
+["Real-World Problems into LP Models","Average","Toy A earns ₱5 and toy B earns ₱8. A needs 2 machine hours, B needs 3, and 100 machine hours are available. Which LP model is correct?",["Max Z = 5x + 8y s.t. 2x + 3y ≤ 100","Min Z = 5x + 8y s.t. 2x + 3y ≥ 100","Max Z = 2x + 3y s.t. 5x + 8y ≤ 100","Max Z = 5x + 8y s.t. 3x + 2y ≤ 100"],"Maximize profit; machine hours are a limited resource (≤)."],
+["Real-World Problems into LP Models","Average","Feed X costs ₱6/kg, feed Y costs ₱9/kg, and at least 50 kg of mix is needed. Which model is correct?",["Min Z = 6x + 9y s.t. x + y ≥ 50","Max Z = 6x + 9y s.t. x + y ≤ 50","Min Z = 9x + 6y s.t. x + y ≥ 50","Min Z = 6x + 9y s.t. x + y ≤ 50"],"Cost is minimized; 'at least' → ≥."],
+["Real-World Problems into LP Models","Average","A firm must produce at least twice as many units of A as of B (x = A, y = B). This is written as:",["x ≥ 2y","y ≥ 2x","x + y ≥ 2","x ≤ 2y"],"'A at least twice B' → x ≥ 2y, i.e., x − 2y ≥ 0."],
+["Real-World Problems into LP Models","Average","A shop can sell at most 40 items in total and must stock at least 5 of item x. Constraints are:",["x + y ≤ 40 and x ≥ 5","x + y ≥ 40 and x ≤ 5","x + y ≤ 40 and x ≤ 5","x + y = 5 and x ≥ 40"],"Total limit ≤ 40; minimum stock of x ≥ 5."],
+["Inequalities","Easy","Solve: 3x − 5 ≤ 10",["x ≤ 5","x ≥ 5","x ≤ 15/3 + 5","x ≤ 3"],"3x ≤ 15 → x ≤ 5."],
+["Inequalities","Easy","Which point satisfies 2x + 3y ≤ 12?",["(3, 2)","(4, 3)","(5, 2)","(6, 1)"],"(3,2): 6 + 6 = 12 ≤ 12 ✓. Others give 17, 16, 15."],
+["Inequalities","Average","Which point lies inside the feasible region of x + y ≤ 10, 2x + y ≤ 14, x ≥ 0, y ≥ 0?",["(3, 4)","(6, 6)","(8, 3)","(−1, 2)"],"(3,4): 7 ≤ 10 and 10 ≤ 14 ✓. (6,6) and (8,3) break x + y ≤ 10; (−1,2) breaks x ≥ 0."],
+["Inequalities","Average","The region above the line y = 2x + 1 is represented by:",["y ≥ 2x + 1","y ≤ 2x + 1","x ≥ 2y + 1","y ≥ 2x − 1"],"'Above' a line means larger y, so y ≥ (line)."],
+["Two-Variable LP: Graphical Method","Average","Maximize Z = 3x + 2y subject to x + y ≤ 4, x ≤ 3, x, y ≥ 0. The maximum value of Z is:",["11","12","9","8"],"Corners: (0,0)=0, (3,0)=9, (3,1)=11, (0,4)=8. Max = 11 at (3,1)."],
+["Elementary Row Operations","Easy","Which is NOT a valid elementary row operation?",["Multiplying a row by 0","Swapping two rows","Multiplying a row by a nonzero constant","Adding a multiple of one row to another"],"Multiplying by zero destroys information and is not reversible."],
+["Elementary Row Operations","Average","Apply (1/2)R1 to the row [2  4 | 6]. The result is:",["[1  2 | 3]","[1  4 | 6]","[4  8 | 12]","[1  2 | 6]"],"Scale every entry, including the constant: 1, 2, 3."],
+["Elementary Row Operations","Average","Given R1 = [1  2 | 5] and R2 = [3  4 | 11], R2 ← R2 − 3R1 gives:",["[0  −2 | −4]","[0  −2 | 26]","[0  10 | 26]","[3  −2 | −4]"],"3 − 3 = 0; 4 − 6 = −2; 11 − 15 = −4."],
+["Elementary Row Operations","Average","Solve by elimination: 2x + y = 7 and x − y = 2.",["x = 3, y = 1","x = 2, y = 3","x = 1, y = 3","x = 4, y = 2"],"Add the equations: 3x = 9 → x = 3, then y = 1."],
+["Simplex Method (Maximization)","Easy","Max Z = 3x + 2y has three ≤ constraints. How many slack variables are in the standard form?",["3","2","5","1"],"One slack variable is added per ≤ constraint."],
+["Simplex Method (Maximization)","Easy","Initial tableau Z-row: Z − 5x − 3y = 0. The entering variable is:",["x","y","Z","A slack variable"],"Choose the most negative Z-row entry (−5 → x)."],
+["Simplex Method (Maximization)","Average","Max Z = 3x + 5y; x + 2y ≤ 12; 3x + 2y ≤ 18. After y enters, which variable leaves (minimum ratio test)?",["s1 (ratio 12/2 = 6)","s2 (ratio 18/2 = 9)","x","y"],"Ratios: 6 and 9. Smallest is 6, so row 1's slack s1 leaves."],
+["Simplex Method (Maximization)","Average","Max Z = 4x + 3y; 2x + y ≤ 10; x + y ≤ 8. The value of Z after the first pivot is:",["20","30","24","0"],"x enters; ratios 5 and 8 → pivot on row 1, x = 5, Z = 4(5) = 20."],
+["Simplex Method (Maximization)","Average","Max Z = 2x + 3y; x + y ≤ 5; x + 2y ≤ 8; x, y ≥ 0. The optimal Z is:",["13","12","10","15"],"Corners: (5,0)=10, (2,3)=13, (0,4)=12. Max = 13."],
+["Simplex Method (Maximization)","Difficult","Max Z = 40x + 30y; x + y ≤ 12; 2x + y ≤ 16; x, y ≥ 0. The optimal solution is:",["x = 4, y = 8, Z = 400","x = 8, y = 0, Z = 320","x = 0, y = 12, Z = 360","x = 6, y = 4, Z = 360"],"Corners: (8,0)=320, (4,8)=400, (0,12)=360. Max Z = 400 at (4,8)."],
+["Simplex Method (Minimization)","Average","Min C = 3x + 2y; x + y ≥ 4; x + 3y ≥ 6; x, y ≥ 0. The minimum value of C is:",["8","11","18","6"],"Corners: (0,4)=8, (3,1)=11, (6,0)=18. Min = 8."],
+["Simplex Method (Minimization)","Average","Min C = 12x + 16y; x + 2y ≥ 40; x + y ≥ 30. Using the dual (transpose) the minimum cost equals:",["400","480","240","360"],"Corners: (20,10)=400, (40,0)=480, (0,30)=480. Min = 400."],
+["Simplex Method (Minimization)","Difficult","Min C = 5x + 4y; 2x + y ≥ 8; x + 3y ≥ 9. The dual problem is:",["Max P = 8u + 9v; 2u + v ≤ 5; u + 3v ≤ 4","Max P = 5u + 4v; 2u + v ≤ 8; u + 3v ≤ 9","Min P = 8u + 9v; 2u + v ≥ 5; u + 3v ≥ 4","Max P = 8u + 9v; 2u + u ≤ 5; v + 3v ≤ 4"],"Transpose the augmented matrix: constants become the dual objective, and the old objective coefficients become the dual constraint limits."],
+["Big-M Method (Maximization)","Average","For Max Z = 3x + 5y with constraint x + y ≥ 2 (surplus s1, artificial A1), the Big-M objective is:",["Z = 3x + 5y − M·A1","Z = 3x + 5y + M·A1","Z = 3x + 5y − M·s1","Z = 3x + 5y + s1 − A1"],"In maximization, artificial variables are penalized with −M."],
+["Big-M Method (Maximization)","Difficult","A final Big-M tableau is optimal but an artificial variable is still positive in the basis. The problem is:",["Infeasible","Unbounded","Optimal with alternative solutions","Degenerate but optimal"],"A positive artificial variable at optimality means no feasible solution exists."],
+["Big-M Method (Minimization)","Easy","In Big-M minimization, the penalty M for an artificial variable is added to the objective as:",["+M·A","−M·A","+M·s","0·A"],"Minimization uses +M·A so artificial variables are driven out."],
+["Two-Phase Method (Maximization)","Average","Phase I ends and Phase II begins when:",["The auxiliary objective W* = 0","W* > 0","All slack variables are 0","Z = 0"],"W* = 0 means all artificial variables are zero, so a feasible solution exists."],
+["Two-Phase Method (Minimization)","Average","The Phase I auxiliary objective for a problem with artificial variables A1 and A2 is:",["Minimize W = A1 + A2","Maximize W = A1 + A2","Minimize W = x + y","Minimize W = M(A1 + A2)"],"Phase I minimizes the sum of the artificial variables."],
+["Transportation Model","Easy","Supplies are 100 and 150; demands are 80, 90 and 100. This transportation model is:",["Unbalanced (supply 250 ≠ demand 270)","Balanced","Balanced with 3 sources","Infeasible with no solution"],"250 ≠ 270, so a dummy source is needed."],
+["Northwest Corner Method","Average","Supply S1=20, S2=30; Demand D1=10, D2=25, D3=15. Costs: S1 = 4, 6, 8; S2 = 5, 3, 7. Total cost by the Northwest Corner Method:",["250","220","235","270"],"S1D1 10(40), S1D2 10(60), S2D2 15(45), S2D3 15(105) = 250."],
+["Northwest Corner Method","Average","Supply 40, 60; Demand 30, 45, 25. Costs: S1 = 3, 5, 2; S2 = 4, 1, 6. NWC total cost:",["325","290","310","355"],"30×3 + 10×5 + 35×1 + 25×6 = 90 + 50 + 35 + 150 = 325."],
+["Northwest Corner Method","Average","Supply 30, 40, 30; Demand 20, 30, 25, 25. Costs: R1 = 2,3,5,4; R2 = 6,4,3,5; R3 = 3,7,2,6. NWC total cost:",["370","340","395","410"],"20×2 + 10×3 + 20×4 + 20×3 + 5×2 + 25×6 = 40+30+80+60+10+150 = 370."],
+["Least Cost Method","Average","Supply 30, 20; Demand 15, 20, 15. Costs: S1 = 5, 2, 6; S2 = 4, 3, 1. Total cost by the Least Cost Method:",["125","110","140","155"],"Cell cost 1: 15 units (15); cost 2: 20 units (40); then S2D1 5×4 = 20 and S1D1 10×5 = 50. Total 125."],
+["Vogel's Approximation Method","Average","In VAM, the row penalty of a row with costs 7, 3, 9 is:",["4","2","6","3"],"Penalty = second-smallest − smallest = 7 − 3 = 4."],
+["Vogel's Approximation Method","Difficult","Supply 20, 30; Demand 10, 25, 15. Costs: S1 = 8, 6, 10; S2 = 9, 12, 13. Total cost by VAM:",["465","450","480","510"],"Largest penalty is column D2 (12−6 = 6): ship 20 from S1 at 6 (120). Then S2 ships 10×9 + 5×12 + 15×13 = 345. Total 465."],
+["Hungarian Method","Average","Assignment cost matrix: [9,2,7],[6,4,3],[5,8,1]. The minimum total cost is:",["9","10","14","8"],"Row/column reduction gives assignment 1→2 (2), 2→1 (6), 3→3 (1) = 9."],
+["Hungarian Method","Average","Assignment cost matrix: [8,6,10],[7,9,5],[4,5,6]. The minimum total cost is:",["15","18","19","12"],"Best assignment: 1→2 (6), 2→3 (5), 3→1 (4) = 15."],
+["Minimum Spanning Tree","Easy","A spanning tree of a connected graph with 8 vertices has how many edges?",["7","8","9","6"],"A tree with n vertices has n − 1 edges."],
+["Minimum Spanning Tree","Average","Graph edges: AB=4, AC=2, BC=1, BD=5, CD=8, CE=10, DE=2. Using Prim's starting at A, after A and C the next vertex added is:",["B (edge BC = 1)","D","E","A"],"From {A, C}, the cheapest connecting edge is BC = 1."],
+["Minimum Spanning Tree","Average","Same graph (AB=4, AC=2, BC=1, BD=5, CD=8, CE=10, DE=2). Using Kruskal's algorithm, the first edge excluded because it forms a cycle is:",["AB (4)","BD (5)","DE (2)","AC (2)"],"Order: BC(1), AC(2), DE(2), then AB(4) closes cycle A–B–C and is rejected."],
+["Minimum Spanning Tree","Average","Same graph. The total cost of the MST using Prim's algorithm is:",["10","12","14","8"],"Edges: BC 1 + AC 2 + DE 2 + BD 5 = 10."],
+["Minimum Spanning Tree","Difficult","Edges: (1,2)=1, (2,5)=3, (4,6)=3, (2,4)=4, (1,3)=5, (3,4)=5, (2,3)=6, (1,4)=7, (4,5)=8, (1,5)=9, (3,6)=10. The MST total cost is:",["16","18","14","20"],"Kruskal picks 1+3+3+4+5 = 16 (5 edges for 6 nodes); (3,4)=5 would form a cycle."]
+];
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const topics=[...new Set(Q.map(q=>q[0]))];
+const app=document.getElementById('app');let S;
+function home(){
+app.innerHTML=`<h1>MATH 304 – Quantitative Methods</h1><div class="mut">Final departmental exam reviewer · ${Q.length} items (Easy 15 · Average 30 · Difficult 5). Sample items for topics without slides are included.</div>
+<div class="card"><label>Topic<br><select id="t" style="width:100%;padding:10px;margin:6px 0 12px;background:var(--bg);border:1px solid var(--bd);border-radius:8px"><option value="">All topics (full 50-item exam)</option>${topics.map(t=>`<option>${t}</option>`).join('')}</select></label>
+<label><input type="checkbox" id="sh" checked> Shuffle questions</label><br><label><input type="checkbox" id="ex"> Exam mode (answers shown only at the end)</label><br><br><button class="p" id="go">Start</button></div>`;
+go.onclick=()=>{let l=Q.filter(q=>!t.value||q[0]===t.value);if(sh.checked)l=shuf(l);
+S={i:0,sc:0,exam:ex.checked,done:false,items:l.map(q=>({q,o:shuf(q[3].map((x,k)=>[x,k==0])),pick:null}))};show()}}
+function show(){const it=S.items[S.i],q=it.q,n=S.items.length;
+app.innerHTML=`<div class="row" style="justify-content:space-between"><span class="mut">Question ${S.i+1} of ${n}</span><button onclick="home()">Quit</button></div><div class="bar"><i style="width:${S.i/n*100}%"></i></div>
+<div class="card"><span class="tag">${q[0]}</span><span class="tag">${q[1]}</span><pre>${q[2]}</pre>${it.o.map((o,k)=>`<button class="opt" data-k="${k}">${'ABCD'[k]}. ${o[0]}</button>`).join('')}<div id="fb"></div></div><div class="row"><button class="p" id="nx" style="display:none">${S.i==n-1?'Finish':'Next'}</button></div>`;
+const bs=[...document.querySelectorAll('.opt')];
+const mark=()=>{bs.forEach((b,k)=>{b.disabled=true;if(it.o[k][1])b.classList.add('ok');else if(it.pick==k)b.classList.add('no')});
+fb.innerHTML=`<div class="ex"><b>${it.o[it.pick][1]?'Correct.':'Incorrect.'}</b> ${q[4]}</div>`};
+bs.forEach(b=>b.onclick=()=>{it.pick=+b.dataset.k;if(it.o[it.pick][1])S.sc++;
+if(S.exam){bs.forEach(x=>{x.disabled=true});b.classList.add('ok')}else mark();nx.style.display='';});
+nx.onclick=()=>{S.i++;S.i<n?show():end()}}
+function end(){const n=S.items.length;const miss=S.items.filter(x=>!x.o[x.pick]?.[1]);
+app.innerHTML=`<h1>Score: ${S.sc} / ${n} (${Math.round(S.sc/n*100)}%)</h1><div class="row"><button class="p" onclick="home()">Back to start</button></div>
+${S.items.map((x,k)=>`<div class="card"><span class="tag">${k+1}. ${x.q[0]}</span><pre>${x.q[2]}</pre><div>Your answer: <b style="color:var(--${x.o[x.pick][1]?'ok':'no'})">${x.o[x.pick][0]}</b></div>${x.o[x.pick][1]?'':`<div>Correct: <b style="color:var(--ok)">${x.q[3][0]}</b></div>`}<div class="ex">${x.q[4]}</div></div>`).join('')}`}
+home();
+</script></body></html>
